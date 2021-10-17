@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright 2021 by Sebastian Thomschke and contributors
+   SPDX-License-Identifier: EPL-2.0
+
+   @author Sebastian Thomschke
+-->
+<feature
+      id="de.sebthom.eclipse.commons.feature"
+      label="%name"
+      version="1.0.0.qualifier"
+      provider-name="Sebastian Thomschke"
+      plugin="de.sebthom.eclipse.commons"
+      license-feature="org.eclipse.license"
+      license-feature-version="2.0.2.qualifier">
+
+   <description url="https://github.com/sebthom/eclipse-commons">
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <url>
+      <update label="de.sebthom.eclipse.commons Latest" url="https://raw.githubusercontent.com/sebthom/eclipse-commons/updatesite/"/>
+   </url>
+
+   <plugin
+         id="org.apache.commons.commons-io"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.lang3"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.sf.jstuff.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="de.sebthom.eclipse.commons"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
