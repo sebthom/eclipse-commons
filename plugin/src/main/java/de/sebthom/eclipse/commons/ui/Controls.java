@@ -9,8 +9,10 @@ import java.util.function.Consumer;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.widgets.Control;
 
 import net.sf.jstuff.core.validation.Args;
@@ -20,27 +22,45 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class Controls {
 
-   public static void onFocused(@NonNull final Control control, @NonNull final Runnable handler) {
+   public static FocusListener onFocused(@NonNull final Control control, @NonNull final Consumer<FocusEvent> handler) {
       Args.notNull("control", control);
       Args.notNull("handler", handler);
 
-      control.addFocusListener(new FocusAdapter() {
+      final var listener = new FocusAdapter() {
          @Override
-         public void focusGained(final FocusEvent e) {
-            handler.run();
+         public void focusGained(final FocusEvent ev) {
+            handler.accept(ev);
          }
-      });
+      };
+      control.addFocusListener(listener);
+      return listener;
    }
 
-   public static void onKeyPressed(@NonNull final Control control, @NonNull final Consumer<KeyEvent> handler) {
+   public static FocusListener onFocused(@NonNull final Control control, @NonNull final Runnable handler) {
       Args.notNull("control", control);
       Args.notNull("handler", handler);
 
-      control.addKeyListener(new KeyAdapter() {
+      final var listener = new FocusAdapter() {
+         @Override
+         public void focusGained(final FocusEvent ev) {
+            handler.run();
+         }
+      };
+      control.addFocusListener(listener);
+      return listener;
+   }
+
+   public static KeyListener onKeyPressed(@NonNull final Control control, @NonNull final Consumer<KeyEvent> handler) {
+      Args.notNull("control", control);
+      Args.notNull("handler", handler);
+
+      final var listener = new KeyAdapter() {
          @Override
          public void keyPressed(final KeyEvent ev) {
             handler.accept(ev);
          }
-      });
+      };
+      control.addKeyListener(listener);
+      return listener;
    }
 }

@@ -11,6 +11,7 @@ import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Text;
 
 import net.sf.jstuff.core.Strings;
@@ -78,17 +79,23 @@ public abstract class Texts extends Controls {
       widget.addDisposeListener(ev -> model.unsubscribe(onModelChanged));
    }
 
-   public static void onModified(@NonNull final Text text, @NonNull final BiConsumer<Text, ModifyEvent> handler) {
+   @NonNull
+   public static ModifyListener onModified(@NonNull final Text text, @NonNull final BiConsumer<Text, ModifyEvent> handler) {
       Args.notNull("text", text);
       Args.notNull("handler", handler);
 
-      text.addModifyListener(ev -> handler.accept(text, ev));
+      final ModifyListener listener = ev -> handler.accept(text, ev);
+      text.addModifyListener(listener);
+      return listener;
    }
 
-   public static void onModified(@NonNull final Text text, @NonNull final Runnable handler) {
+   @NonNull
+   public static ModifyListener onModified(@NonNull final Text text, @NonNull final Runnable handler) {
       Args.notNull("text", text);
       Args.notNull("handler", handler);
 
-      text.addModifyListener(ev -> handler.run());
+      final ModifyListener listener = ev -> handler.run();
+      text.addModifyListener(listener);
+      return listener;
    }
 }
