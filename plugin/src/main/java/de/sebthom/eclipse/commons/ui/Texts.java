@@ -90,6 +90,16 @@ public abstract class Texts extends Controls {
    }
 
    @NonNull
+   public static ModifyListener onModified(@NonNull final Text text, @NonNull final Consumer<String> handler) {
+      Args.notNull("text", text);
+      Args.notNull("handler", handler);
+
+      final ModifyListener listener = ev -> handler.accept(text.getText());
+      text.addModifyListener(listener);
+      return listener;
+   }
+
+   @NonNull
    public static ModifyListener onModified(@NonNull final Text text, @NonNull final Runnable handler) {
       Args.notNull("text", text);
       Args.notNull("handler", handler);
