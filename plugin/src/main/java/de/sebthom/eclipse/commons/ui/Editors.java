@@ -5,10 +5,14 @@
 package de.sebthom.eclipse.commons.ui;
 
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import de.sebthom.eclipse.commons.internal.EclipseCommonsPlugin;
 
 /**
  * @author Sebastian Thomschke
@@ -51,6 +55,11 @@ public abstract class Editors {
    }
 
    @Nullable
+   public static IDocument getActiveDocument() {
+      return getDocument(getActiveTextEditor());
+   }
+
+   @Nullable
    public static IDocument getDocument(final ITextEditor editor) {
       if (editor == null)
          return null;
@@ -58,5 +67,27 @@ public abstract class Editors {
       if (docProvider == null)
          return null;
       return docProvider.getDocument(editor.getEditorInput());
+   }
+
+   public static boolean replaceCurrentSelection(final String replacement) {
+      final var editor = getActiveTextEditor();
+      if (editor == null)
+         return false;
+
+      final var doc = getDocument(editor);
+      if (doc == null)
+         return false;
+
+      final var sel = (TextSelection) editor.getSelectionProvider().getSelection();
+      if (sel.isEmpty() || sel.getLength() == 0)
+         return false;
+
+      try {
+         doc.replace(sel.getOffset(), sel.getLength(), replacement);
+         return true;
+      } catch (final BadLocationException ex) {
+         EclipseCommonsPlugin.log().error(ex);
+      }
+      return false;
    }
 }
