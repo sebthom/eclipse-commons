@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
@@ -34,6 +35,37 @@ public class Markers {
    public Markers(@NonNull final String markerId) {
       Args.notNull("markerId", markerId);
       this.markerId = markerId;
+   }
+
+   private boolean removeMarkerAt(final int offset, final int length) {
+      final var activeMarkers = this.activeMarkers;
+      final var activeMarkersAnnoModel = this.activeMarkersAnnoModel;
+
+      if (activeMarkersAnnoModel == null || activeMarkers.length == 0)
+         return false;
+
+      for (final var activeMarker : activeMarkers) {
+         final var markerPos = activeMarkersAnnoModel.getPosition(activeMarker);
+         if (markerPos == null) {
+            continue;
+         }
+         if (offset == markerPos.getOffset() //
+            && length == markerPos.getLength()) {
+            activeMarkersAnnoModel.removeAnnotation(activeMarker);
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public boolean removeMarkerAt(@NonNull final ITextSelection pos) {
+      Args.notNull("pos", pos);
+      return removeMarkerAt(pos.getOffset(), pos.getLength());
+   }
+
+   public boolean removeMarkerAt(@NonNull final Position pos) {
+      Args.notNull("pos", pos);
+      return removeMarkerAt(pos.getOffset(), pos.getLength());
    }
 
    public void removeMarkers() {
