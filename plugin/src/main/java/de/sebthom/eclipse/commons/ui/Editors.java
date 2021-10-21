@@ -4,6 +4,7 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -45,7 +46,7 @@ public abstract class Editors {
    }
 
    @Nullable
-   public static IAnnotationModel getAnnotationModel(final ITextEditor editor) {
+   public static IAnnotationModel getAnnotationModel(@Nullable final ITextEditor editor) {
       if (editor == null)
          return null;
       final var docProvider = editor.getDocumentProvider();
@@ -60,7 +61,7 @@ public abstract class Editors {
    }
 
    @Nullable
-   public static IDocument getDocument(final ITextEditor editor) {
+   public static IDocument getDocument(@Nullable final ITextEditor editor) {
       if (editor == null)
          return null;
       final var docProvider = editor.getDocumentProvider();
@@ -69,7 +70,7 @@ public abstract class Editors {
       return docProvider.getDocument(editor.getEditorInput());
    }
 
-   public static boolean replaceCurrentSelection(final String replacement) {
+   public static boolean replaceCurrentSelection(@NonNull final String replacement, final boolean selectReplacement) {
       final var editor = getActiveTextEditor();
       if (editor == null)
          return false;
@@ -78,12 +79,22 @@ public abstract class Editors {
       if (doc == null)
          return false;
 
-      final var sel = (TextSelection) editor.getSelectionProvider().getSelection();
+      final var selProvider = editor.getSelectionProvider();
+      final var sel = (TextSelection) selProvider.getSelection();
+
       if (sel.isEmpty() || sel.getLength() == 0)
+         return false;
+
+      if (sel.getText().equals(replacement))
          return false;
 
       try {
          doc.replace(sel.getOffset(), sel.getLength(), replacement);
+         if (selectReplacement) {
+            selProvider.setSelection(new TextSelection(sel.getOffset(), replacement.length()));
+         } else {
+            selProvider.setSelection(new TextSelection(sel.getOffset() + replacement.length(), 0));
+         }
          return true;
       } catch (final BadLocationException ex) {
          EclipseCommonsPlugin.log().error(ex);
