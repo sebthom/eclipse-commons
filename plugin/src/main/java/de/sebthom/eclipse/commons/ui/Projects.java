@@ -122,11 +122,11 @@ public final class Projects {
    }
 
    @Nullable
-   public static IProject getProject(@Nullable final String name, @Nullable final String natureId) {
-      if (Strings.isEmpty(name))
+   public static IProject getProject(@Nullable final String projectName, @Nullable final String natureId) {
+      if (Strings.isEmpty(projectName) || Strings.isBlank(natureId))
          return null;
 
-      final var project = ResourcesPlugin.getWorkspace().getRoot().getProject(name);
+      final var project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
       if (!project.exists())
          return null;
 
@@ -141,7 +141,7 @@ public final class Projects {
          return false;
 
       try {
-         return !project.hasNature(natureId);
+         return project.hasNature(natureId);
       } catch (final CoreException ex) {
          EclipseCommonsPlugin.log().debug(ex);
          return false;
