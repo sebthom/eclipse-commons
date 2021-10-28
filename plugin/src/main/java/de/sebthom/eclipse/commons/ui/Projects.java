@@ -140,6 +140,10 @@ public final class Projects {
       if (!project.exists())
          return false;
 
+      // natures of closed projects cannot be queried
+      if (!project.isOpen())
+         return false;
+
       try {
          return project.hasNature(natureId);
       } catch (final CoreException ex) {
