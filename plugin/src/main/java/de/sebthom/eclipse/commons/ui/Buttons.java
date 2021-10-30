@@ -4,6 +4,8 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
+import java.util.function.Consumer;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -13,12 +15,39 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolItem;
 
+import net.sf.jstuff.core.ref.ObservableRef;
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author Sebastian Thomschke
  */
 public abstract class Buttons extends Controls {
+
+   /**
+    * two-way bind
+    */
+   public static void bind(@NonNull final Button button, @NonNull final ObservableRef<Boolean> model) {
+      Args.notNull("button", button);
+      Args.notNull("model", model);
+
+      button.setSelection(model.get());
+
+      button.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(final SelectionEvent ev) {
+            model.set(button.getSelection());
+         }
+      });
+
+      final Consumer<Boolean> onModelChanged = newValue -> UI.run(() -> {
+         final var select = newValue != null ? newValue : false;
+         if (button.getSelection() != select) {
+            button.setSelection(select);
+         }
+      });
+      model.subscribe(onModelChanged);
+      button.addDisposeListener(ev -> model.unsubscribe(onModelChanged));
+   }
 
    @NonNull
    public static SelectionListener onSelected(@NonNull final Button button, @NonNull final Runnable handler) {
