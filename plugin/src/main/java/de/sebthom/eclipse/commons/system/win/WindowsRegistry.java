@@ -125,9 +125,8 @@ public class WindowsRegistry {
     * @return null if not present
     */
    @Nullable
-   public String getStringValue(@NonNull final String keyPath, @NonNull final String valueName) {
+   public String getStringValue(@NonNull final String keyPath, @Nullable final String valueName) {
       Args.notEmpty("keyPath", keyPath);
-      Args.notEmpty("valueName", valueName);
 
       assertSupported();
 
@@ -142,10 +141,9 @@ public class WindowsRegistry {
     * @return null if not present
     */
    @Nullable
-   public String getStringValue(@NonNull final String keyParentPath, final String keyName, @NonNull final String valueName) {
+   public String getStringValue(@NonNull final String keyParentPath, @NonNull final String keyName, @Nullable final String valueName) {
       Args.notEmpty("keyParentPath", keyParentPath);
       Args.notEmpty("keyName", keyName);
-      Args.notEmpty("valueName", valueName);
 
       return getStringValue(keyParentPath + KEY_PATH_SEPARATOR + keyName, valueName);
    }
@@ -158,7 +156,7 @@ public class WindowsRegistry {
       return Advapi32Util.registryKeyExists(root, keyPath);
    }
 
-   public boolean hasKey(@NonNull final String keyParentPath, final String keyName) {
+   public boolean hasKey(@NonNull final String keyParentPath, @NonNull final String keyName) {
       Args.notEmpty("keyParentPath", keyParentPath);
       Args.notEmpty("keyName", keyName);
 
@@ -168,25 +166,24 @@ public class WindowsRegistry {
    /**
     * Set a registry REG_SZ value.
     */
-   public void setStringValue(final String keyPath, final String name, final Object value) {
+   public void setStringValue(@NonNull final String keyPath, @Nullable final String valueName, @NonNull final Object value) {
       Args.notEmpty("keyPath", keyPath);
-      Args.notEmpty("name", name);
       Args.notNull("value", value);
 
       assertSupported();
 
-      Advapi32Util.registrySetStringValue(root, keyPath, name, value.toString());
+      Advapi32Util.registrySetStringValue(root, keyPath, valueName, value.toString());
    }
 
    /**
     * Set a registry REG_SZ value.
     */
-   public void setStringValue(@NonNull final String keyParentPath, final String keyName, final String name, final Object value) {
+   public void setStringValue(@NonNull final String keyParentPath, @NonNull final String keyName, @Nullable final String valueName,
+      @NonNull final Object value) {
       Args.notEmpty("keyParentPath", keyParentPath);
       Args.notEmpty("keyName", keyName);
-      Args.notEmpty("name", name);
       Args.notNull("value", value);
 
-      setStringValue(keyParentPath + KEY_PATH_SEPARATOR + keyName, name, value);
+      setStringValue(keyParentPath + KEY_PATH_SEPARATOR + keyName, valueName, value);
    }
 }
