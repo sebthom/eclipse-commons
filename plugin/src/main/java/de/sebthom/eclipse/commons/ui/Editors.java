@@ -11,6 +11,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import de.sebthom.eclipse.commons.internal.EclipseCommonsPlugin;
@@ -19,6 +20,11 @@ import de.sebthom.eclipse.commons.internal.EclipseCommonsPlugin;
  * @author Sebastian Thomschke
  */
 public abstract class Editors {
+
+   @Nullable
+   public static IDocument getActiveDocument() {
+      return getDocument(getActiveTextEditor());
+   }
 
    @Nullable
    public static IEditorPart getActiveEditor() {
@@ -38,6 +44,12 @@ public abstract class Editors {
       if (editor instanceof ITextEditor)
          return (ITextEditor) editor;
 
+      if (editor instanceof MultiPageEditorPart) {
+         final var page = ((MultiPageEditorPart) editor).getSelectedPage();
+         if (page instanceof ITextEditor)
+            return (ITextEditor) page;
+      }
+
       final Object adapter = editor.getAdapter(ITextEditor.class);
       if (adapter != null)
          return (ITextEditor) adapter;
@@ -53,11 +65,6 @@ public abstract class Editors {
       if (docProvider == null)
          return null;
       return docProvider.getAnnotationModel(editor.getEditorInput());
-   }
-
-   @Nullable
-   public static IDocument getActiveDocument() {
-      return getDocument(getActiveTextEditor());
    }
 
    @Nullable
