@@ -49,7 +49,7 @@ public class NotificationPopup extends AbstractNotificationPopup {
       label.setEditable(false);
       label.setCaret(null);
       label.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-      label.setText(message);
+      label.setText(message == null ? "null" : message);
    }
 
    @Override
