@@ -5,7 +5,7 @@
 package de.sebthom.eclipse.commons;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -25,9 +25,16 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
 
+   @NonNullByDefault({})
    protected BundleResources bundleResources;
+
+   @NonNullByDefault({})
    protected PluginLogger logger;
+
+   @NonNullByDefault({})
    protected IPersistentPreferenceStore preferenceStore;
+
+   @NonNullByDefault({})
    protected StatusFactory statusFactory;
 
    protected final String pluginId = getBundle().getSymbolicName();
@@ -63,7 +70,7 @@ public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
    }
 
    @Nullable
-   public Image getSharedImage(@NonNull final String path) {
+   public Image getSharedImage(final String path) {
       Args.notNull("path", path);
 
       var image = getImageRegistry().get(path);
@@ -76,7 +83,7 @@ public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
    }
 
    @Nullable
-   public ImageDescriptor getSharedImageDescriptor(@NonNull final String path) {
+   public ImageDescriptor getSharedImageDescriptor(final String path) {
       Args.notNull("path", path);
 
       return imageDescriptorFromPlugin(getBundle().getSymbolicName(), path);
@@ -103,13 +110,13 @@ public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
    }
 
    @Override
-   public void start(final BundleContext context) throws Exception {
+   public void start(@NonNullByDefault({}) final BundleContext context) throws Exception {
       getLogger().info("starting...");
       super.start(context);
    }
 
    @Override
-   public void stop(final BundleContext context) throws Exception {
+   public void stop(@NonNullByDefault({}) final BundleContext context) throws Exception {
       getLogger().info("stopping...");
       super.stop(context);
    }

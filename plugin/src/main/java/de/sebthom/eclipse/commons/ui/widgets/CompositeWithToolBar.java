@@ -4,6 +4,7 @@
  */
 package de.sebthom.eclipse.commons.ui.widgets;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jface.action.CoolBarManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.ToolBarManager;
@@ -17,6 +18,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Sebastian Thomschke
  */
+@NonNullByDefault(org.eclipse.jdt.annotation.DefaultLocation.PARAMETER)
 public abstract class CompositeWithToolBar extends Composite {
 
    private ViewForm viewForm;

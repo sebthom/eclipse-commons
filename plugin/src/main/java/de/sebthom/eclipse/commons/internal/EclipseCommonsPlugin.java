@@ -4,6 +4,7 @@
  */
 package de.sebthom.eclipse.commons.internal;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.osgi.framework.BundleContext;
 
 import de.sebthom.eclipse.commons.AbstractEclipsePlugin;
@@ -20,11 +21,13 @@ public class EclipseCommonsPlugin extends AbstractEclipsePlugin {
    /**
     * @return the shared instance
     */
+   @NonNull
    public static EclipseCommonsPlugin get() {
       Assert.notNull(instance, "Default plugin instance is still null.");
       return instance;
    }
 
+   @NonNull
    public static PluginLogger log() {
       return get().getLogger();
    }

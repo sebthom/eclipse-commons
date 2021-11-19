@@ -4,7 +4,6 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -77,7 +76,7 @@ public abstract class Editors {
       return docProvider.getDocument(editor.getEditorInput());
    }
 
-   public static boolean replaceCurrentSelection(@NonNull final String replacement, final boolean selectReplacement) {
+   public static boolean replaceCurrentSelection(final String replacement, final boolean selectReplacement) {
       final var editor = getActiveTextEditor();
       if (editor == null)
          return false;

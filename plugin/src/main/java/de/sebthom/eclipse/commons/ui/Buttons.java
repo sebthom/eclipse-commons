@@ -6,7 +6,7 @@ package de.sebthom.eclipse.commons.ui;
 
 import java.util.function.Consumer;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -26,15 +26,12 @@ public abstract class Buttons extends Controls {
    /**
     * two-way bind
     */
-   public static void bind(@NonNull final Button button, @NonNull final ObservableRef<Boolean> model) {
-      Args.notNull("button", button);
-      Args.notNull("model", model);
-
+   public static void bind(final Button button, final ObservableRef<Boolean> model) {
       button.setSelection(model.get());
 
       button.addSelectionListener(new SelectionAdapter() {
          @Override
-         public void widgetSelected(final SelectionEvent ev) {
+         public void widgetSelected(@Nullable final SelectionEvent ev) {
             model.set(button.getSelection());
          }
       });
@@ -49,14 +46,13 @@ public abstract class Buttons extends Controls {
       button.addDisposeListener(ev -> model.unsubscribe(onModelChanged));
    }
 
-   @NonNull
-   public static SelectionListener onSelected(@NonNull final Button button, @NonNull final Runnable handler) {
+   public static SelectionListener onSelected(final Button button, final Runnable handler) {
       Args.notNull("button", button);
       Args.notNull("handler", handler);
 
       final var listener = new SelectionAdapter() {
          @Override
-         public void widgetSelected(final SelectionEvent ev) {
+         public void widgetSelected(@Nullable final SelectionEvent ev) {
             handler.run();
          }
       };
@@ -64,14 +60,13 @@ public abstract class Buttons extends Controls {
       return listener;
    }
 
-   @NonNull
-   public static SelectionListener onSelected(@NonNull final ToolItem button, @NonNull final Runnable handler) {
+   public static SelectionListener onSelected(final ToolItem button, final Runnable handler) {
       Args.notNull("button", button);
       Args.notNull("handler", handler);
 
       final var listener = new SelectionAdapter() {
          @Override
-         public void widgetSelected(final SelectionEvent ev) {
+         public void widgetSelected(@Nullable final SelectionEvent ev) {
             handler.run();
          }
       };

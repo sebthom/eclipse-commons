@@ -11,6 +11,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -21,11 +23,11 @@ import org.eclipse.swt.widgets.Combo;
 
 import net.sf.jstuff.core.functional.TriConsumer;
 import net.sf.jstuff.core.logging.Logger;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author Sebastian Thomschke
  */
+@NonNullByDefault
 public class ComboWrapper<E> {
    private static final Logger LOG = Logger.create();
    private static final IStructuredSelection EMPTY_SELECTION = new StructuredSelection();
@@ -36,7 +38,6 @@ public class ComboWrapper<E> {
    private CopyOnWriteArrayList<TriConsumer<ComboWrapper<E>, Collection<E>, Collection<E>>> itemsChangedListener = new CopyOnWriteArrayList<>();
 
    public ComboWrapper(final Combo combo) {
-      Args.notNull("combo", combo);
       this.combo = combo;
       this.viewer = new ComboViewer(combo);
    }
@@ -86,8 +87,6 @@ public class ComboWrapper<E> {
    }
 
    public ComboWrapper<E> setItems(final Collection<E> items) {
-      Args.notNull("items", items);
-
       viewer.setContentProvider((IStructuredContentProvider) input -> {
          final var coll = (Collection<?>) input;
          return coll.toArray(Object[]::new);
@@ -106,9 +105,6 @@ public class ComboWrapper<E> {
    }
 
    public ComboWrapper<E> setItems(final Collection<E> items, final Comparator<E> comparator) {
-      Args.notNull("items", items);
-      Args.notNull("comparator", comparator);
-
       viewer.setContentProvider((IStructuredContentProvider) input -> {
          @SuppressWarnings("unchecked")
          final var list = new ArrayList<>((Collection<E>) input);
@@ -128,8 +124,12 @@ public class ComboWrapper<E> {
       return this;
    }
 
-   public ComboWrapper<E> setLabelComparator(final Comparator<? super String> comparator) {
-      viewer.setComparator(new ViewerComparator(comparator));
+   public ComboWrapper<E> setLabelComparator(@Nullable final Comparator<? super String> comparator) {
+      if (comparator == null) {
+         viewer.setComparator(null);
+      } else {
+         viewer.setComparator(new ViewerComparator(comparator));
+      }
       return this;
    }
 
@@ -137,14 +137,14 @@ public class ComboWrapper<E> {
       viewer.setLabelProvider(new LabelProvider() {
          @SuppressWarnings("unchecked")
          @Override
-         public String getText(final Object item) {
+         public String getText(@Nullable final Object item) {
             return provider.apply((E) item);
          }
       });
       return this;
    }
 
-   public ComboWrapper<E> setSelection(final E item) {
+   public ComboWrapper<E> setSelection(@Nullable final E item) {
       final var currentSelection = getSelection();
       if (currentSelection == item)
          return this;
@@ -153,7 +153,7 @@ public class ComboWrapper<E> {
       return this;
    }
 
-   public ComboWrapper<E> setSelection(final E item, final boolean reveal) {
+   public ComboWrapper<E> setSelection(@Nullable final E item, final boolean reveal) {
       final var currentSelection = getSelection();
       if (currentSelection == item)
          return this;

@@ -13,14 +13,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
-
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author Sebastian Thomschke
@@ -30,10 +28,11 @@ public class Markers {
    private final String markerId;
 
    private Annotation[] activeMarkers = new Annotation[0];
+
+   @Nullable
    private IAnnotationModel activeMarkersAnnoModel;
 
-   public Markers(@NonNull final String markerId) {
-      Args.notNull("markerId", markerId);
+   public Markers(final String markerId) {
       this.markerId = markerId;
    }
 
@@ -58,17 +57,16 @@ public class Markers {
       return false;
    }
 
-   public boolean removeMarkerAt(@NonNull final ITextSelection pos) {
-      Args.notNull("pos", pos);
+   public boolean removeMarkerAt(final ITextSelection pos) {
       return removeMarkerAt(pos.getOffset(), pos.getLength());
    }
 
-   public boolean removeMarkerAt(@NonNull final Position pos) {
-      Args.notNull("pos", pos);
+   public boolean removeMarkerAt(final Position pos) {
       return removeMarkerAt(pos.getOffset(), pos.getLength());
    }
 
    public void removeMarkers() {
+      final var activeMarkersAnnoModel = this.activeMarkersAnnoModel;
       if (activeMarkersAnnoModel != null && activeMarkers.length > 0) {
          if (activeMarkersAnnoModel instanceof IAnnotationModelExtension) {
             final var annoModelEx = (IAnnotationModelExtension) activeMarkersAnnoModel;
@@ -81,9 +79,11 @@ public class Markers {
       }
    }
 
-   public void setMarkers(@NonNull final IAnnotationModel annoModel, final List<Position> matches, final IProgressMonitor monitor) {
-      Args.notNull("annoModel", annoModel);
+   public void setMarkers(final IAnnotationModel annoModel, @Nullable final List<Position> matches) {
+      setMarkers(annoModel, matches, new NullProgressMonitor());
+   }
 
+   public void setMarkers(final IAnnotationModel annoModel, @Nullable final List<Position> matches, final IProgressMonitor monitor) {
       if (activeMarkersAnnoModel != null) {
          removeMarkers();
       }
@@ -94,7 +94,7 @@ public class Markers {
 
       final var job = new Job("Setting markers") {
          @Override
-         public IStatus run(final IProgressMonitor monitor) {
+         public IStatus run(@Nullable final IProgressMonitor monitor) {
             final Map<Annotation, Position> newMarkers = new HashMap<>(matches.size());
             for (final var matchPos : matches) {
                newMarkers.put(new Annotation(markerId, false, null), matchPos);
@@ -113,6 +113,6 @@ public class Markers {
          }
       };
       job.setPriority(Job.INTERACTIVE);
-      job.run(monitor == null ? new NullProgressMonitor() : monitor);
+      job.run(monitor);
    }
 }

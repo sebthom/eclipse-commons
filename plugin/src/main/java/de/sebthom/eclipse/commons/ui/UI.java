@@ -4,7 +4,6 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.swt.graphics.Point;
@@ -21,16 +20,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.progress.IProgressConstants;
 
-import net.sf.jstuff.core.validation.Args;
-
 /**
  * @author Sebastian Thomschke
  */
 public abstract class UI {
 
-   public static void center(@NonNull final Shell shell) {
-      Args.notNull("shell", shell);
-
+   public static void center(final Shell shell) {
       final Rectangle parentBounds;
       if (shell.getParent() == null) {
          parentBounds = shell.getDisplay().getBounds();
@@ -43,7 +38,6 @@ public abstract class UI {
       shell.setLocation(new Point(x, y));
    }
 
-   @NonNull
    public static Display getDisplay() {
       var display = PlatformUI.getWorkbench().getDisplay();
       if (display != null)
@@ -63,9 +57,7 @@ public abstract class UI {
    }
 
    @Nullable
-   public static IStatusLineManager getStatusLine(@NonNull final IWorkbenchWindow window) {
-      Args.notNull("window", window);
-
+   public static IStatusLineManager getStatusLine(final IWorkbenchWindow window) {
       final var page = window.getActivePage();
 
       final var editorSite = page.getActiveEditor().getEditorSite();
@@ -100,9 +92,7 @@ public abstract class UI {
       return Display.getCurrent() != null;
    }
 
-   public static void maximize(@NonNull final IWorkbenchPart part) {
-      Args.notNull("part", part);
-
+   public static void maximize(final IWorkbenchPart part) {
       final var site = part.getSite();
       final var handlerService = site.getService(IHandlerService.class);
       try {
@@ -112,9 +102,7 @@ public abstract class UI {
       }
    }
 
-   public static void maximize(@NonNull final IWorkbenchWindow window) {
-      Args.notNull("window", window);
-
+   public static void maximize(final IWorkbenchWindow window) {
       final var handlerService = window.getWorkbench().getService(IHandlerService.class);
       try {
          handlerService.executeCommand(IWorkbenchCommandConstants.WINDOW_MAXIMIZE_ACTIVE_VIEW_OR_EDITOR, null);
@@ -138,9 +126,7 @@ public abstract class UI {
    /**
     * Runs the given runnable asynchronous on the UI thread
     */
-   public static void run(@NonNull final Runnable runnable) {
-      Args.notNull("runnable", runnable);
-
+   public static void run(final Runnable runnable) {
       if (isUIThread()) {
          runnable.run();
       } else {

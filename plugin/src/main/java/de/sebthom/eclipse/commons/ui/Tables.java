@@ -7,42 +7,34 @@ package de.sebthom.eclipse.commons.ui;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import net.sf.jstuff.core.validation.Args;
-
 /**
  * @author Sebastian Thomschke
  */
 public abstract class Tables {
 
-   public static void autoResizeColumns(@NonNull final TableViewer tableViewer) {
-      Args.notNull("tableViewer", tableViewer);
-
+   public static void autoResizeColumns(final TableViewer tableViewer) {
       autoResizeColumns(tableViewer.getTable());
    }
 
-   public static void autoResizeColumns(@NonNull final Table table) {
-      Args.notNull("table", table);
-
+   public static void autoResizeColumns(final Table table) {
       for (final TableColumn column : table.getColumns()) {
          column.pack();
       }
    }
 
-   public static void setLastColumnAutoExpand(@NonNull final Table table, final int minWidth) {
-      Args.notNull("table", table);
-
+   public static void setLastColumnAutoExpand(final Table table, final int minWidth) {
       table.addControlListener(new ControlAdapter() {
          final Set<TableColumn> monitoredColumns = new HashSet<>();
 
          @Override
-         public synchronized void controlResized(final ControlEvent event) {
+         public synchronized void controlResized(@NonNullByDefault({}) final ControlEvent event) {
             final var cols = table.getColumns();
             if (cols.length == 0)
                return;

@@ -4,6 +4,7 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.swt.graphics.Font;
@@ -17,6 +18,7 @@ public abstract class Fonts {
    public static final Font DEFAULT_FONT_BOLD = JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT);
    public static final Styler DEFAULT_FONT_BOLD_STYLER = new Styler() {
       @Override
+      @NonNullByDefault({})
       public void applyStyles(final TextStyle textStyle) {
          textStyle.font = DEFAULT_FONT_BOLD;
       }

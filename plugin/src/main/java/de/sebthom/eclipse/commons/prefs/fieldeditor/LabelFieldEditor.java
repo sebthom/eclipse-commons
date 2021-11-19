@@ -4,7 +4,8 @@
  */
 package de.sebthom.eclipse.commons.prefs.fieldeditor;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -14,11 +15,13 @@ import org.eclipse.swt.widgets.Composite;
  *
  * @author Sebastian Thomschke
  */
+@NonNullByDefault
 public class LabelFieldEditor extends FieldEditor {
 
+   @Nullable
    private GridData labelLayoutData;
 
-   public LabelFieldEditor(final String value, @NonNull final Composite parent) {
+   public LabelFieldEditor(@Nullable final String value, final Composite parent) {
       super("unused", value, parent);
    }
 
@@ -28,7 +31,7 @@ public class LabelFieldEditor extends FieldEditor {
    }
 
    @Override
-   protected void doFillIntoGrid(final Composite parent, final int numColumns) {
+   protected void doFillIntoGrid(@Nullable final Composite parent, final int numColumns) {
       labelLayoutData = new GridData(GridData.FILL, GridData.CENTER, false, false, numColumns, 1);
       getLabelControl(parent).setLayoutData(labelLayoutData);
    }

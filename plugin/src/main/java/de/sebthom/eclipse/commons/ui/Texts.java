@@ -9,14 +9,13 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Text;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.ref.ObservableRef;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author Sebastian Thomschke
@@ -26,13 +25,8 @@ public abstract class Texts extends Controls {
    /**
     * two-way bind
     */
-   public static <E> void bind(@NonNull final Text widget, @NonNull final ObservableRef<E> model,
-      @NonNull final Function<String, E> widget2model, @NonNull final Function<E, String> model2widget) {
-      Args.notNull("widget", widget);
-      Args.notNull("model", model);
-      Args.notNull("widget2model", widget2model);
-      Args.notNull("model2widget", model2widget);
-
+   public static <E> void bind(final Text widget, final ObservableRef<@Nullable E> model, final Function<String, E> widget2model,
+      final Function<E, @Nullable String> model2widget) {
       final var initialVal = model.get();
       if (initialVal != null) {
          widget.setText(model2widget.apply(initialVal));
@@ -57,10 +51,7 @@ public abstract class Texts extends Controls {
    /**
     * two-way bind
     */
-   public static void bind(@NonNull final Text widget, @NonNull final ObservableRef<String> model) {
-      Args.notNull("widget", widget);
-      Args.notNull("model", model);
-
+   public static void bind(final Text widget, final ObservableRef<@Nullable String> model) {
       final var initialTxt = model.get();
       if (Strings.isNotEmpty(initialTxt)) {
          widget.setText(initialTxt);
@@ -68,7 +59,7 @@ public abstract class Texts extends Controls {
 
       widget.addModifyListener(ev -> model.set(widget.getText()));
 
-      final Consumer<String> onModelChanged = newValue -> UI.run(() -> {
+      final Consumer<@Nullable String> onModelChanged = newValue -> UI.run(() -> {
          final var oldTxt = widget.getText();
          final var newTxt = newValue == null ? "" : newValue;
          if (!Objects.equals(oldTxt, newTxt)) {
@@ -79,31 +70,19 @@ public abstract class Texts extends Controls {
       widget.addDisposeListener(ev -> model.unsubscribe(onModelChanged));
    }
 
-   @NonNull
-   public static ModifyListener onModified(@NonNull final Text text, @NonNull final BiConsumer<Text, ModifyEvent> handler) {
-      Args.notNull("text", text);
-      Args.notNull("handler", handler);
-
+   public static ModifyListener onModified(final Text text, final BiConsumer<Text, ModifyEvent> handler) {
       final ModifyListener listener = ev -> handler.accept(text, ev);
       text.addModifyListener(listener);
       return listener;
    }
 
-   @NonNull
-   public static ModifyListener onModified(@NonNull final Text text, @NonNull final Consumer<String> handler) {
-      Args.notNull("text", text);
-      Args.notNull("handler", handler);
-
+   public static ModifyListener onModified(final Text text, final Consumer<String> handler) {
       final ModifyListener listener = ev -> handler.accept(text.getText());
       text.addModifyListener(listener);
       return listener;
    }
 
-   @NonNull
-   public static ModifyListener onModified(@NonNull final Text text, @NonNull final Runnable handler) {
-      Args.notNull("text", text);
-      Args.notNull("handler", handler);
-
+   public static ModifyListener onModified(final Text text, final Runnable handler) {
       final ModifyListener listener = ev -> handler.run();
       text.addModifyListener(listener);
       return listener;

@@ -7,26 +7,21 @@ package de.sebthom.eclipse.commons.ui;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.List;
-
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author Sebastian Thomschke
  */
 public abstract class Lists extends Controls {
 
-   @NonNull
-   public static SelectionListener onSelectionChanged(@NonNull final List list, @NonNull final Consumer<SelectionEvent> handler) {
-      Args.notNull("list", list);
-      Args.notNull("handler", handler);
-
+   public static SelectionListener onSelectionChanged(final List list, final Consumer<SelectionEvent> handler) {
       final var listener = new SelectionAdapter() {
          @Override
+         @NonNullByDefault({})
          public void widgetSelected(final SelectionEvent ev) {
             handler.accept(ev);
          }
@@ -35,13 +30,10 @@ public abstract class Lists extends Controls {
       return listener;
    }
 
-   @NonNull
-   public static SelectionListener onSelectionChanged(@NonNull final List list, @NonNull final BiConsumer<List, SelectionEvent> handler) {
-      Args.notNull("list", list);
-      Args.notNull("handler", handler);
-
+   public static SelectionListener onSelectionChanged(final List list, final BiConsumer<List, SelectionEvent> handler) {
       final var listener = new SelectionAdapter() {
          @Override
+         @NonNullByDefault({})
          public void widgetSelected(final SelectionEvent ev) {
             handler.accept(list, ev);
          }
@@ -50,13 +42,10 @@ public abstract class Lists extends Controls {
       return listener;
    }
 
-   @NonNull
-   public static SelectionListener onSelectionChanged(@NonNull final List list, @NonNull final Runnable handler) {
-      Args.notNull("list", list);
-      Args.notNull("handler", handler);
-
+   public static SelectionListener onSelectionChanged(final List list, final Runnable handler) {
       final var listener = new SelectionAdapter() {
          @Override
+         @NonNullByDefault({})
          public void widgetSelected(final SelectionEvent ev) {
             handler.run();
          }

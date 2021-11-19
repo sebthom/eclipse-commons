@@ -22,7 +22,10 @@ import de.sebthom.eclipse.commons.ui.Editors;
 public class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTargetExtension, IFindReplaceTargetExtension2,
    IFindReplaceTargetExtension3 {
 
+   @Nullable
    private static FindReplaceTarget lastFindReplaceTarget;
+
+   @Nullable
    private static IWorkbenchPart lastEditor;
 
    @Nullable
@@ -66,13 +69,13 @@ public class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTarget
    }
 
    @Override
-   public int findAndSelect(final int widgetOffset, final String findString, final boolean searchForward, final boolean caseSensitive,
-      final boolean wholeWord) {
+   public int findAndSelect(final int widgetOffset, @Nullable final String findString, final boolean searchForward,
+      final boolean caseSensitive, final boolean wholeWord) {
       return target.findAndSelect(widgetOffset, findString, searchForward, caseSensitive, wholeWord);
    }
 
    @Override
-   public int findAndSelect(final int offset, final String findString, final boolean searchForward, final boolean caseSensitive,
+   public int findAndSelect(final int offset, @Nullable final String findString, final boolean searchForward, final boolean caseSensitive,
       final boolean wholeWord, final boolean regExSearch) {
       return targetExt3.findAndSelect(offset, findString, searchForward, caseSensitive, wholeWord, regExSearch);
    }
@@ -103,12 +106,12 @@ public class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTarget
    }
 
    @Override
-   public void replaceSelection(final String text) {
+   public void replaceSelection(@Nullable final String text) {
       target.replaceSelection(text);
    }
 
    @Override
-   public void replaceSelection(final String text, final boolean regExReplace) {
+   public void replaceSelection(@Nullable final String text, final boolean regExReplace) {
       targetExt3.replaceSelection(text, regExReplace);
    }
 
@@ -118,12 +121,12 @@ public class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTarget
    }
 
    @Override
-   public void setScope(final IRegion scope) {
+   public void setScope(@Nullable final IRegion scope) {
       targetExt.setScope(scope);
    }
 
    @Override
-   public void setScopeHighlightColor(final Color color) {
+   public void setScopeHighlightColor(@Nullable final Color color) {
       targetExt.setScopeHighlightColor(color);
    }
 

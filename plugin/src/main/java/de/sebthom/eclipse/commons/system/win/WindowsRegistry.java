@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import com.sun.jna.platform.win32.Advapi32Util;
@@ -21,6 +21,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author Sebastian Thomschke
  */
+@NonNullByDefault
 public class WindowsRegistry {
 
    private static final String KEY_PATH_SEPARATOR = "\\";
@@ -38,8 +39,7 @@ public class WindowsRegistry {
       return SystemUtils.IS_OS_WINDOWS;
    }
 
-   @NonNull
-   public static String join(@NonNull final String... keyPathElements) {
+   public static String join(final String... keyPathElements) {
       Args.notNull("keyPathElements", keyPathElements);
 
       return String.join(KEY_PATH_SEPARATOR, keyPathElements);
@@ -47,13 +47,13 @@ public class WindowsRegistry {
 
    private final HKEY root;
 
-   public WindowsRegistry(@NonNull final HKEY root) {
+   public WindowsRegistry(final HKEY root) {
       Args.notNull("root", root);
 
       this.root = root;
    }
 
-   public boolean createKey(@NonNull final String keyPath) {
+   public boolean createKey(final String keyPath) {
       Args.notEmpty("keyPath", keyPath);
 
       assertSupported();
@@ -64,14 +64,14 @@ public class WindowsRegistry {
       return Advapi32Util.registryCreateKey(root, keyPath);
    }
 
-   public boolean createKey(@NonNull final String keyParentPath, @NonNull final String keyName) {
+   public boolean createKey(final String keyParentPath, final String keyName) {
       Args.notEmpty("keyParentPath", keyParentPath);
       Args.notEmpty("keyName", keyName);
 
       return createKey(keyParentPath + KEY_PATH_SEPARATOR + keyName);
    }
 
-   public boolean deleteKey(@NonNull final String keyPath, final boolean recursive) {
+   public boolean deleteKey(final String keyPath, final boolean recursive) {
       Args.notEmpty("keyPath", keyPath);
 
       assertSupported();
@@ -88,15 +88,14 @@ public class WindowsRegistry {
       return true;
    }
 
-   public boolean deleteKey(@NonNull final String keyParentPath, @NonNull final String keyName, final boolean recursive) {
+   public boolean deleteKey(final String keyParentPath, final String keyName, final boolean recursive) {
       Args.notEmpty("keyParentPath", keyParentPath);
       Args.notEmpty("keyName", keyName);
 
       return deleteKey(keyParentPath + KEY_PATH_SEPARATOR + keyName, recursive);
    }
 
-   @NonNull
-   public List<String> getKeys(@NonNull final String keyPath) {
+   public List<String> getKeys(final String keyPath) {
       Args.notEmpty("keyPath", keyPath);
 
       assertSupported();
@@ -107,8 +106,7 @@ public class WindowsRegistry {
       return Arrays.asList(Advapi32Util.registryGetKeys(root, keyPath));
    }
 
-   @NonNull
-   public List<String> getKeys(@NonNull final String keyParentPath, @NonNull final String keyName) {
+   public List<String> getKeys(final String keyParentPath, final String keyName) {
       Args.notEmpty("keyParentPath", keyParentPath);
       Args.notEmpty("keyName", keyName);
 
@@ -125,7 +123,7 @@ public class WindowsRegistry {
     * @return null if not present
     */
    @Nullable
-   public String getStringValue(@NonNull final String keyPath, @Nullable final String valueName) {
+   public String getStringValue(final String keyPath, @Nullable final String valueName) {
       Args.notEmpty("keyPath", keyPath);
 
       assertSupported();
@@ -141,14 +139,14 @@ public class WindowsRegistry {
     * @return null if not present
     */
    @Nullable
-   public String getStringValue(@NonNull final String keyParentPath, @NonNull final String keyName, @Nullable final String valueName) {
+   public String getStringValue(final String keyParentPath, final String keyName, @Nullable final String valueName) {
       Args.notEmpty("keyParentPath", keyParentPath);
       Args.notEmpty("keyName", keyName);
 
       return getStringValue(keyParentPath + KEY_PATH_SEPARATOR + keyName, valueName);
    }
 
-   public boolean hasKey(@NonNull final String keyPath) {
+   public boolean hasKey(final String keyPath) {
       Args.notEmpty("keyPath", keyPath);
 
       assertSupported();
@@ -156,7 +154,7 @@ public class WindowsRegistry {
       return Advapi32Util.registryKeyExists(root, keyPath);
    }
 
-   public boolean hasKey(@NonNull final String keyParentPath, @NonNull final String keyName) {
+   public boolean hasKey(final String keyParentPath, final String keyName) {
       Args.notEmpty("keyParentPath", keyParentPath);
       Args.notEmpty("keyName", keyName);
 
@@ -166,9 +164,8 @@ public class WindowsRegistry {
    /**
     * Set a registry REG_SZ value.
     */
-   public void setStringValue(@NonNull final String keyPath, @Nullable final String valueName, @NonNull final Object value) {
+   public void setStringValue(final String keyPath, @Nullable final String valueName, final Object value) {
       Args.notEmpty("keyPath", keyPath);
-      Args.notNull("value", value);
 
       assertSupported();
 
@@ -178,11 +175,9 @@ public class WindowsRegistry {
    /**
     * Set a registry REG_SZ value.
     */
-   public void setStringValue(@NonNull final String keyParentPath, @NonNull final String keyName, @Nullable final String valueName,
-      @NonNull final Object value) {
+   public void setStringValue(final String keyParentPath, final String keyName, @Nullable final String valueName, final Object value) {
       Args.notEmpty("keyParentPath", keyParentPath);
       Args.notEmpty("keyName", keyName);
-      Args.notNull("value", value);
 
       setStringValue(keyParentPath + KEY_PATH_SEPARATOR + keyName, valueName, value);
    }

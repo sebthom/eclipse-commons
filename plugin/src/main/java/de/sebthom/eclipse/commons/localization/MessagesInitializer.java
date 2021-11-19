@@ -12,18 +12,18 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.osgi.util.NLS;
 
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Fields;
 import net.sf.jstuff.core.reflection.Members;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author Sebastian Thomschke
  */
+@NonNullByDefault
 public final class MessagesInitializer {
 
    private static final Logger LOG = Logger.create();
@@ -36,10 +36,7 @@ public final class MessagesInitializer {
     *
     * @see NLS#initializeMessages(String, Class)
     */
-   public static void initializeMessages(@NonNull final String messageBundleName, @NonNull final Class<?> messagesClass) {
-      Args.notNull("messageBundleName", messageBundleName);
-      Args.notNull("messagesClass", messagesClass);
-
+   public static void initializeMessages(final String messageBundleName, final Class<?> messagesClass) {
       /*
        * calculate names of message properties files based on current locale
        */

@@ -4,7 +4,7 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
@@ -14,10 +14,12 @@ import org.eclipse.swt.dnd.Transfer;
  */
 public abstract class Clipboards {
 
-   private static Clipboard clipboard;
-   private static Transfer[] textTransfer = new Transfer[] {TextTransfer.getInstance()};
+   private static final Transfer[] TEXT_TRANSFER = new Transfer[] {TextTransfer.getInstance()};
 
-   @NonNull
+   @Nullable
+   private static Clipboard clipboard;
+
+   @Nullable
    public static synchronized Clipboard getClipboard() {
       if (clipboard == null) {
          clipboard = new Clipboard(UI.getDisplay());
@@ -28,6 +30,8 @@ public abstract class Clipboards {
    public synchronized void copyToClipboard(final String text) {
       getClipboard();
 
-      clipboard.setContents(new Object[] {text}, textTransfer);
+      if (clipboard != null) {
+         clipboard.setContents(new Object[] {text}, TEXT_TRANSFER);
+      }
    }
 }

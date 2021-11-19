@@ -6,6 +6,7 @@ package de.sebthom.eclipse.commons.ui;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.statushandlers.IStatusAdapterConstants;
@@ -15,9 +16,9 @@ import org.eclipse.ui.statushandlers.StatusManager;
 /**
  * @author Sebastian Thomschke
  */
-public final class Dialogs {
+public abstract class Dialogs {
 
-   public static void showError(final String title, final String msg, final Object... msgArgs) {
+   public static void showError(@Nullable final String title, @Nullable final String msg, final Object... msgArgs) {
       if (UI.isUIThread()) {
          showErrorInternal(title, msg, msgArgs);
          return;
@@ -25,11 +26,11 @@ public final class Dialogs {
       UI.run(() -> showErrorInternal(title, msg, msgArgs));
    }
 
-   private static void showErrorInternal(final String title, final String msg, final Object... msgArgs) {
+   private static void showErrorInternal(@Nullable final String title, @Nullable final String msg, final Object... msgArgs) {
       MessageDialog.openError(UI.getShell(), title, ArrayUtils.isEmpty(msgArgs) ? msg : NLS.bind(msg, msgArgs));
    }
 
-   public static void showWarning(final String title, final String msg, final Object... msgArgs) {
+   public static void showWarning(@Nullable final String title, @Nullable final String msg, final Object... msgArgs) {
       if (UI.isUIThread()) {
          showWarningInternal(title, msg, msgArgs);
          return;
@@ -37,11 +38,11 @@ public final class Dialogs {
       UI.run(() -> showWarningInternal(title, msg, msgArgs));
    }
 
-   private static void showWarningInternal(final String title, final String msg, final Object... msgArgs) {
+   private static void showWarningInternal(@Nullable final String title, @Nullable final String msg, final Object... msgArgs) {
       MessageDialog.openWarning(UI.getShell(), title, ArrayUtils.isEmpty(msgArgs) ? msg : NLS.bind(msg, msgArgs));
    }
 
-   public static void showStatus(final String title, final IStatus status, final boolean log) {
+   public static void showStatus(@Nullable final String title, final IStatus status, final boolean log) {
       final var statusAdapter = new StatusAdapter(status);
       statusAdapter.setProperty(IStatusAdapterConstants.TITLE_PROPERTY, title);
       var style = StatusManager.SHOW | StatusManager.BLOCK;
@@ -49,8 +50,5 @@ public final class Dialogs {
          style = style | StatusManager.LOG;
       }
       StatusManager.getManager().handle(statusAdapter, style);
-   }
-
-   private Dialogs() {
    }
 }

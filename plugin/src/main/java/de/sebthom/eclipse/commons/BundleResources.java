@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.URIUtil;
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.osgi.framework.Bundle;
 
 import net.sf.jstuff.core.validation.Args;
@@ -29,32 +29,24 @@ import net.sf.jstuff.core.validation.Args;
 public class BundleResources {
 
    private final Bundle bundle;
+
+   @NonNullByDefault({})
    private String[] searchPaths;
 
-   public BundleResources(@NonNull final Bundle bundle) {
-      Args.notNull("bundle", bundle);
-      this.bundle = bundle;
-      searchPaths = new String[] {""};
+   public BundleResources(final Bundle bundle) {
+      this(bundle, "");
    }
 
-   public BundleResources(@NonNull final Bundle bundle, final String... searchPaths) {
-      Args.notNull("bundle", bundle);
-      Args.notNull("searchPaths", searchPaths);
-
+   public BundleResources(final Bundle bundle, final String... searchPaths) {
       this.bundle = bundle;
       initSearchPaths(searchPaths);
    }
 
-   public BundleResources(@NonNull final Plugin plugin) {
-      Args.notNull("plugin", plugin);
-      bundle = plugin.getBundle();
-      searchPaths = new String[] {""};
+   public BundleResources(final Plugin plugin) {
+      this(plugin, "");
    }
 
-   public BundleResources(@NonNull final Plugin plugin, final String... searchPaths) {
-      Args.notNull("plugin", plugin);
-      Args.notNull("searchPaths", searchPaths);
-
+   public BundleResources(final Plugin plugin, final String... searchPaths) {
       bundle = plugin.getBundle();
       initSearchPaths(searchPaths);
    }
@@ -62,8 +54,7 @@ public class BundleResources {
    /**
     * @throws IllegalArgumentException if given resourcePath cannot be found
     */
-   @NonNull
-   public File extract(@NonNull final String resourcePath) throws IOException {
+   public File extract(final String resourcePath) throws IOException {
       Args.notBlank("resourcePath", resourcePath);
 
       final var url = FileLocator.toFileURL(getURL(resourcePath)); // extract the file
@@ -77,8 +68,7 @@ public class BundleResources {
    /**
     * @throws IllegalArgumentException if given resourcePath cannot be found
     */
-   @NonNull
-   public InputStream getAsStream(@NonNull final String resourcePath) throws IOException {
+   public InputStream getAsStream(final String resourcePath) throws IOException {
       final var url = getURL(resourcePath);
       final var con = url.openConnection();
       return con.getInputStream(); // responsibility of caller to close stream when done
@@ -87,8 +77,7 @@ public class BundleResources {
    /**
     * @throws IllegalArgumentException if given resourcePath cannot be found
     */
-   @NonNull
-   public String getAsString(@NonNull final String resourcePath) throws IOException {
+   public String getAsString(final String resourcePath) throws IOException {
       try (var stream = getAsStream(resourcePath)) {
          final var writer = new StringWriter();
          IOUtils.copy(stream, writer, StandardCharsets.UTF_8);
@@ -99,8 +88,7 @@ public class BundleResources {
    /**
     * @throws IllegalArgumentException if given resourcePath cannot be found
     */
-   @NonNull
-   public URL getURL(@NonNull final String resourcePath) {
+   public URL getURL(final String resourcePath) {
       Args.notBlank("resourcePath", resourcePath);
 
       for (final var searchPath : searchPaths) {
