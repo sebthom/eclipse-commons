@@ -27,7 +27,7 @@ public abstract class Editors {
 
    @Nullable
    public static IEditorPart getActiveEditor() {
-      final var activePage = UI.getWorkbenchPage();
+      final var activePage = UI.getActiveWorkbenchPage();
       if (activePage == null)
          return null;
       return activePage.getActiveEditor();
