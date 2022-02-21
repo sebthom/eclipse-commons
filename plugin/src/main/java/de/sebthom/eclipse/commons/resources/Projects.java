@@ -9,7 +9,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -22,6 +24,18 @@ import net.sf.jstuff.core.Strings;
  */
 @NonNullByDefault
 public abstract class Projects {
+
+   @Nullable
+   public static IProject adapt(@Nullable final Object adaptable) {
+      final var project = Adapters.adapt(adaptable, IProject.class);
+      if (project != null)
+         return project;
+      @SuppressWarnings("unused")
+      final var resource = Adapters.adapt(adaptable, IResource.class);
+      if (resource != null)
+         return resource.getProject();
+      return null;
+   }
 
    public static List<IProject> getOpenProjectsWithNature(@Nullable final String natureId) {
       if (natureId == null || natureId.length() == 0)
