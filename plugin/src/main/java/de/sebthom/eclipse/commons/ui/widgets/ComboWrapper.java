@@ -5,6 +5,7 @@
 package de.sebthom.eclipse.commons.ui.widgets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -20,6 +21,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
 
 import net.sf.jstuff.core.functional.TriConsumer;
 import net.sf.jstuff.core.logging.Logger;
@@ -42,9 +44,19 @@ public class ComboWrapper<E> {
       this.viewer = new ComboViewer(combo);
    }
 
+   public ComboWrapper(final Composite parent, final int style, final Object layoutData) {
+      combo = new Combo(parent, style);
+      combo.setLayoutData(layoutData);
+      this.viewer = new ComboViewer(combo);
+   }
+
    public ComboWrapper<E> clearSelection() {
       combo.clearSelection();
       return this;
+   }
+
+   public Combo getCombo() {
+      return combo;
    }
 
    @SuppressWarnings("unchecked")
@@ -122,6 +134,14 @@ public class ComboWrapper<E> {
          }
       }
       return this;
+   }
+
+   public ComboWrapper<E> setItems(@SuppressWarnings("unchecked") final E... items) {
+      return setItems(Arrays.asList(items));
+   }
+
+   public ComboWrapper<E> setItems(final E[] items, final Comparator<E> comparator) {
+      return setItems(Arrays.asList(items), comparator);
    }
 
    public ComboWrapper<E> setLabelComparator(@Nullable final Comparator<? super String> comparator) {
