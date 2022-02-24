@@ -5,6 +5,7 @@ Bundle-SymbolicName: de.sebthom.eclipse.commons;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Sebastian Thomschke
 Automatic-Module-Name: de.sebthom.eclipse.commons
+Bundle-Activator: de.sebthom.eclipse.commons.internal.EclipseCommonsPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ClassPath: .
@@ -25,7 +26,7 @@ Require-Bundle: org.eclipse.platform;bundle-version="4.17.0",
  com.sun.jna.platform;bundle-version="4.5.1";resolution:=optional,
  org.apache.commons.commons-io;bundle-version="2.11.0",
  org.apache.commons.lang3;bundle-version="3.12.0",
- net.sf.jstuff.core;bundle-version="5.19.0"
+ net.sf.jstuff.core;bundle-version="5.21.0"
 Export-Package: de.sebthom.eclipse.commons,
  de.sebthom.eclipse.commons.localization,
  de.sebthom.eclipse.commons.logging,
@@ -36,4 +37,3 @@ Export-Package: de.sebthom.eclipse.commons,
  de.sebthom.eclipse.commons.ui,
  de.sebthom.eclipse.commons.ui.listener,
  de.sebthom.eclipse.commons.ui.widgets
-Bundle-Activator: de.sebthom.eclipse.commons.internal.EclipseCommonsPlugin

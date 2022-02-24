@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolItem;
 
-import net.sf.jstuff.core.ref.ObservableRef;
+import net.sf.jstuff.core.ref.MutableObservableRef;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -26,7 +26,7 @@ public abstract class Buttons extends Controls {
    /**
     * two-way bind
     */
-   public static void bind(final Button button, final ObservableRef<Boolean> model) {
+   public static void bind(final Button button, final MutableObservableRef<Boolean> model) {
       button.setSelection(model.get());
 
       button.addSelectionListener(new SelectionAdapter() {
@@ -37,7 +37,7 @@ public abstract class Buttons extends Controls {
       });
 
       final Consumer<Boolean> onModelChanged = newValue -> UI.run(() -> {
-         final var select = newValue != null ? newValue : false;
+         final var select = newValue != null && newValue;
          if (button.getSelection() != select) {
             button.setSelection(select);
          }
