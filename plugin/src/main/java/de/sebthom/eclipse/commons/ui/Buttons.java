@@ -27,15 +27,6 @@ public abstract class Buttons extends Controls {
     * two-way bind
     */
    public static void bind(final Button button, final MutableObservableRef<Boolean> model) {
-      button.setSelection(model.get());
-
-      button.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(@Nullable final SelectionEvent ev) {
-            model.set(button.getSelection());
-         }
-      });
-
       final Consumer<Boolean> onModelChanged = newValue -> UI.run(() -> {
          final var select = newValue != null && newValue;
          if (button.getSelection() != select) {
@@ -43,6 +34,15 @@ public abstract class Buttons extends Controls {
          }
       });
       model.subscribe(onModelChanged);
+
+      button.setSelection(model.get());
+      button.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(@Nullable final SelectionEvent ev) {
+            model.set(button.getSelection());
+         }
+      });
+
       button.addDisposeListener(ev -> model.unsubscribe(onModelChanged));
    }
 

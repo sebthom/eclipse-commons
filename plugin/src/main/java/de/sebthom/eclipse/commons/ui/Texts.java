@@ -14,7 +14,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Text;
 
-import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.ref.MutableObservableRef;
 
 /**
@@ -52,13 +51,6 @@ public abstract class Texts extends Controls {
     * two-way bind
     */
    public static void bind(final Text widget, final MutableObservableRef<@Nullable String> model) {
-      final var initialTxt = model.get();
-      if (Strings.isNotEmpty(initialTxt)) {
-         widget.setText(initialTxt);
-      }
-
-      widget.addModifyListener(ev -> model.set(widget.getText()));
-
       final Consumer<@Nullable String> onModelChanged = newValue -> UI.run(() -> {
          final var oldTxt = widget.getText();
          final var newTxt = newValue == null ? "" : newValue;
@@ -67,6 +59,11 @@ public abstract class Texts extends Controls {
          }
       });
       model.subscribe(onModelChanged);
+
+      final var initialTxt = model.get();
+      widget.setText(initialTxt == null ? "" : initialTxt);
+      widget.addModifyListener(ev -> model.set(widget.getText()));
+
       widget.addDisposeListener(ev -> model.unsubscribe(onModelChanged));
    }
 

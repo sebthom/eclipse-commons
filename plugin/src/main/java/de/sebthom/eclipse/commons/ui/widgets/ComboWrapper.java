@@ -23,8 +23,10 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 
+import de.sebthom.eclipse.commons.ui.UI;
 import net.sf.jstuff.core.functional.TriConsumer;
 import net.sf.jstuff.core.logging.Logger;
+import net.sf.jstuff.core.ref.MutableObservableRef;
 
 /**
  * @author Sebastian Thomschke
@@ -80,6 +82,17 @@ public class ComboWrapper<E> {
 
    public boolean isEnabled() {
       return combo.isEnabled();
+   }
+
+   public ComboWrapper<E> bind(final MutableObservableRef<@Nullable E> model) {
+      final Consumer<@Nullable E> onModelChanged = newValue -> UI.run(() -> setSelection(newValue));
+      model.subscribe(onModelChanged);
+
+      setSelection(model.get());
+      onSelectionChanged(model::set);
+
+      combo.addDisposeListener(ev -> model.unsubscribe(onModelChanged));
+      return this;
    }
 
    public ComboWrapper<E> onItemsChanged(final TriConsumer<ComboWrapper<E>, Collection<E>, Collection<E>> listener) {
