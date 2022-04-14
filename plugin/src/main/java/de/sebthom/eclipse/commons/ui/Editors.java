@@ -88,10 +88,9 @@ public abstract class Editors {
       final var selProvider = editor.getSelectionProvider();
       final var sel = (TextSelection) selProvider.getSelection();
 
-      if (sel.isEmpty() || sel.getLength() == 0)
-         return false;
-
-      if (sel.getText().equals(replacement))
+      if (sel.isEmpty() //
+         || sel.getLength() == 0 //
+         || sel.getText().equals(replacement))
          return false;
 
       try {
