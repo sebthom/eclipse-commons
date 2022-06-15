@@ -16,7 +16,7 @@ import net.sf.jstuff.core.validation.Assert;
  */
 public class EclipseCommonsPlugin extends AbstractEclipsePlugin {
 
-   private static EclipseCommonsPlugin instance;
+   private static volatile EclipseCommonsPlugin instance;
 
    /**
     * @return the shared instance
