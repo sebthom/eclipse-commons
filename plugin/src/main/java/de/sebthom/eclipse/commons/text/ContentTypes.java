@@ -4,9 +4,10 @@
  */
 package de.sebthom.eclipse.commons.text;
 
-import org.eclipse.core.filebuffers.FileBuffers;
+import static org.eclipse.core.filebuffers.FileBuffers.*;
+import static org.eclipse.core.runtime.Platform.*;
+
 import org.eclipse.core.filebuffers.ITextFileBuffer;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.text.IDocument;
@@ -19,15 +20,23 @@ public abstract class ContentTypes {
 
    private static final IContentType[] EMPTY = {};
 
-   public static IContentType[] getContentTypes(@Nullable final IDocument doc) {
+   @Nullable
+   public static IContentType findById(final String contentTypeId) {
+      return getContentTypeManager().getContentType(contentTypeId);
+   }
+
+   public static IContentType[] getAll(@Nullable final IDocument doc) {
       if (doc == null)
          return EMPTY;
 
-      final var buffer = FileBuffers.getTextFileBufferManager().getTextFileBuffer(doc);
-      return getContentTypes(buffer);
+      return getAll(getTextFileBufferManager().getTextFileBuffer(doc));
    }
 
-   public static IContentType[] getContentTypes(@Nullable final ITextFileBuffer buff) {
+   public static IContentType[] getAll(final IEditorInput input) {
+      return getContentTypeManager().findContentTypesFor(input.getName());
+   }
+
+   public static IContentType[] getAll(@Nullable final ITextFileBuffer buff) {
       if (buff == null)
          return EMPTY;
 
@@ -35,10 +44,6 @@ public abstract class ContentTypes {
       if (fileName == null)
          return EMPTY;
 
-      return Platform.getContentTypeManager().findContentTypesFor(fileName);
-   }
-
-   public static IContentType[] getContentTypes(final IEditorInput input) {
-      return Platform.getContentTypeManager().findContentTypesFor(input.getName());
+      return getContentTypeManager().findContentTypesFor(fileName);
    }
 }
