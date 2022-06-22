@@ -27,7 +27,10 @@ public class LabelFieldEditor extends FieldEditor {
 
    @Override
    protected void adjustForNumColumns(final int numColumns) {
-      labelLayoutData.horizontalSpan = numColumns;
+      final var labelLayoutData = this.labelLayoutData;
+      if (labelLayoutData != null) {
+         labelLayoutData.horizontalSpan = numColumns;
+      }
    }
 
    @Override
