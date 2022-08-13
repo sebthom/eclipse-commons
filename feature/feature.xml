@@ -30,6 +30,21 @@
       <update label="de.sebthom.eclipse.commons Latest" url="https://raw.githubusercontent.com/sebthom/eclipse-commons/updatesite/"/>
    </url>
 
+   <requires>
+      <import plugin="org.eclipse.platform" version="4.17.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.filebuffers"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.apache.commons.commons-io" version="2.11.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.lang3" version="3.12.0" match="greaterOrEqual"/>
+      <import plugin="net.sf.jstuff.core" version="6.0.1" match="greaterOrEqual"/>
+   </requires>
+
    <plugin
          id="org.apache.commons.commons-io"
          download-size="0"
