@@ -4,7 +4,9 @@
  */
 package de.sebthom.eclipse.commons.internal;
 
-import org.eclipse.jdt.annotation.NonNull;
+import static de.sebthom.eclipse.commons.util.NullAnalysisHelper.*;
+
+import org.eclipse.jdt.annotation.Nullable;
 import org.osgi.framework.BundleContext;
 
 import de.sebthom.eclipse.commons.AbstractEclipsePlugin;
@@ -16,31 +18,29 @@ import net.sf.jstuff.core.validation.Assert;
  */
 public class EclipseCommonsPlugin extends AbstractEclipsePlugin {
 
-   private static volatile EclipseCommonsPlugin instance;
+   private static volatile @Nullable EclipseCommonsPlugin instance;
 
    /**
     * @return the shared instance
     */
-   @NonNull
    public static EclipseCommonsPlugin get() {
       Assert.notNull(instance, "Default plugin instance is still null.");
-      return instance;
+      return castNonNull(instance);
    }
 
-   @NonNull
    public static PluginLogger log() {
       return get().getLogger();
    }
 
    @Override
-   public void start(final BundleContext context) throws Exception {
+   public void start(@Nullable final BundleContext context) throws Exception {
       super.start(context);
       instance = this;
 
    }
 
    @Override
-   public void stop(final BundleContext context) throws Exception {
+   public void stop(@Nullable final BundleContext context) throws Exception {
       instance = null;
       super.stop(context);
    }

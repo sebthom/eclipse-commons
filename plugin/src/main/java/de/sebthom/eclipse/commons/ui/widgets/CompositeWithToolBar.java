@@ -4,7 +4,8 @@
  */
 package de.sebthom.eclipse.commons.ui.widgets;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
+import static de.sebthom.eclipse.commons.util.NullAnalysisHelper.*;
+
 import org.eclipse.jface.action.CoolBarManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.ToolBarManager;
@@ -13,37 +14,18 @@ import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Sebastian Thomschke
  */
-@NonNullByDefault(org.eclipse.jdt.annotation.DefaultLocation.PARAMETER)
 public abstract class CompositeWithToolBar extends Composite {
 
    private ViewForm viewForm;
    private Composite contentArea;
-   private FormToolkit formToolkit;
 
    protected CompositeWithToolBar(final Composite parent, final int style) {
       super(parent, style);
 
-      createContent();
-   }
-
-   protected CompositeWithToolBar(final IManagedForm managedForm, final Composite parent, final int style) {
-      super(parent, style);
-
-      formToolkit = managedForm.getToolkit();
-
-      createContent();
-
-      formToolkit.adapt(this);
-      formToolkit.adapt(viewForm);
-      formToolkit.adapt(contentArea);
-   }
-
-   private void createContent() {
       setLayout(new FillLayout());
 
       viewForm = new ViewForm(this, SWT.NONE);
@@ -66,6 +48,15 @@ public abstract class CompositeWithToolBar extends Composite {
       createContent(contentArea);
 
       viewForm.setContent(contentArea);
+   }
+
+   protected CompositeWithToolBar(final IManagedForm managedForm, final Composite parent, final int style) {
+      this(parent, style);
+
+      final var formToolkit = castNonNull(managedForm.getToolkit());
+      formToolkit.adapt(this);
+      formToolkit.adapt(viewForm);
+      formToolkit.adapt(contentArea);
    }
 
    protected abstract void createContent(Composite parent);

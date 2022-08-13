@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import com.sun.jna.platform.win32.Advapi32Util;
@@ -21,7 +20,6 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author Sebastian Thomschke
  */
-@NonNullByDefault
 public class WindowsRegistry {
 
    private static final String KEY_PATH_SEPARATOR = "\\";

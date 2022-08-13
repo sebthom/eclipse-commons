@@ -13,7 +13,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.sebthom.eclipse.commons.internal.EclipseCommonsPlugin;
@@ -22,7 +21,6 @@ import net.sf.jstuff.core.Strings;
 /**
  * @author Sebastian Thomschke
  */
-@NonNullByDefault
 public abstract class Projects {
 
    @Nullable

@@ -4,7 +4,6 @@
  */
 package de.sebthom.eclipse.commons.prefs.fieldeditor;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.layout.GridData;
@@ -15,7 +14,6 @@ import org.eclipse.swt.widgets.Composite;
  *
  * @author Sebastian Thomschke
  */
-@NonNullByDefault
 public class LabelFieldEditor extends FieldEditor {
 
    @Nullable

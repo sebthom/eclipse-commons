@@ -12,7 +12,6 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.osgi.util.NLS;
 
 import net.sf.jstuff.core.io.IOUtils;
@@ -23,7 +22,6 @@ import net.sf.jstuff.core.reflection.Members;
 /**
  * @author Sebastian Thomschke
  */
-@NonNullByDefault
 public final class MessagesInitializer {
 
    private static final Logger LOG = Logger.create();

@@ -12,7 +12,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -31,7 +30,6 @@ import net.sf.jstuff.core.ref.MutableObservableRef;
 /**
  * @author Sebastian Thomschke
  */
-@NonNullByDefault
 public class ComboWrapper<E> {
    private static final Logger LOG = Logger.create();
    private static final IStructuredSelection EMPTY_SELECTION = new StructuredSelection();

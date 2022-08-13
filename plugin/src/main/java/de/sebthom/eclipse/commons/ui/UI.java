@@ -163,7 +163,7 @@ public abstract class UI {
    @Nullable
    public static Shell getShell() {
       final var window = getActiveWorkbenchWindow();
-      return window == null ? null : window.getShell();
+      return window == null ? getDisplay().getActiveShell() : window.getShell();
    }
 
    @Nullable
