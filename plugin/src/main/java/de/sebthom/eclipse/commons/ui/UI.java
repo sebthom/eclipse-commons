@@ -59,13 +59,10 @@ public abstract class UI {
    @Nullable
    public static IProject getActiveProject(final IWorkbenchPartReference partRef) {
       try {
-         if (partRef instanceof IEditorReference) {
-            final var editorRef = (IEditorReference) partRef;
+         if (partRef instanceof final IEditorReference editorRef) {
             final var editorInput = editorRef.getEditorInput();
-            if (editorInput instanceof FileEditorInput) {
-               final var fileEditorInput = (FileEditorInput) editorInput;
+            if (editorInput instanceof final FileEditorInput fileEditorInput)
                return fileEditorInput.getFile().getProject();
-            }
          }
       } catch (final CoreException ex) {
          EclipseCommonsPlugin.log().error(ex);
@@ -78,11 +75,10 @@ public abstract class UI {
    public static IProject getActiveProject(final IWorkbenchWindow window) {
       try {
          final var sel = window.getSelectionService().getSelection();
-         if (sel instanceof IStructuredSelection) {
-            final var structSel = (IStructuredSelection) sel;
+         if (sel instanceof final IStructuredSelection structSel) {
             final var elem1 = structSel.getFirstElement();
-            if (elem1 instanceof IResource)
-               return ((IResource) elem1).getProject();
+            if (elem1 instanceof final IResource res)
+               return res.getProject();
             return null;
          }
 
@@ -175,8 +171,8 @@ public abstract class UI {
          return editorSite.getActionBars().getStatusLineManager();
 
       final var part = page.getActivePart();
-      if (part instanceof IViewSite)
-         return ((IViewSite) part).getActionBars().getStatusLineManager();
+      if (part instanceof final IViewSite view)
+         return view.getActionBars().getStatusLineManager();
 
       return null;
    }

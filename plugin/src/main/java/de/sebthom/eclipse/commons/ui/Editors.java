@@ -40,13 +40,13 @@ public abstract class Editors {
       if (editor == null)
          return null;
 
-      if (editor instanceof ITextEditor)
-         return (ITextEditor) editor;
+      if (editor instanceof final ITextEditor textEditor)
+         return textEditor;
 
-      if (editor instanceof MultiPageEditorPart) {
-         final var page = ((MultiPageEditorPart) editor).getSelectedPage();
-         if (page instanceof ITextEditor)
-            return (ITextEditor) page;
+      if (editor instanceof final MultiPageEditorPart pagePart) {
+         final var page = pagePart.getSelectedPage();
+         if (page instanceof final ITextEditor textEditor)
+            return textEditor;
       }
 
       final Object adapter = editor.getAdapter(ITextEditor.class);

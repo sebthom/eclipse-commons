@@ -79,8 +79,8 @@ public abstract class Buttons extends Controls {
     */
    public static void selectRadio(final Button radio) {
       for (final Control child : radio.getParent().getChildren()) {
-         if (radio != child && (child.getStyle() & SWT.RADIO) != 0 && child instanceof Button) {
-            ((Button) child).setSelection(false);
+         if (radio != child && (child.getStyle() & SWT.RADIO) != 0 && child instanceof final Button button) {
+            button.setSelection(false);
          }
       }
       radio.setSelection(true);

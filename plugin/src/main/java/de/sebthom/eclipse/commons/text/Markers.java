@@ -68,8 +68,7 @@ public class Markers {
    public void removeMarkers() {
       final var activeMarkersAnnoModel = this.activeMarkersAnnoModel;
       if (activeMarkersAnnoModel != null && activeMarkers.length > 0) {
-         if (activeMarkersAnnoModel instanceof IAnnotationModelExtension) {
-            final var annoModelEx = (IAnnotationModelExtension) activeMarkersAnnoModel;
+         if (activeMarkersAnnoModel instanceof final IAnnotationModelExtension annoModelEx) {
             annoModelEx.replaceAnnotations(activeMarkers, new HashMap<>());
          } else {
             for (final Annotation annotation : activeMarkers) {
@@ -100,8 +99,8 @@ public class Markers {
                newMarkers.put(new Annotation(markerId, false, null), matchPos);
             }
 
-            if (annoModel instanceof IAnnotationModelExtension) {
-               ((IAnnotationModelExtension) annoModel).replaceAnnotations(activeMarkers, newMarkers);
+            if (annoModel instanceof final IAnnotationModelExtension annoModelExt) {
+               annoModelExt.replaceAnnotations(activeMarkers, newMarkers);
             } else {
                removeMarkers();
                for (final Map.Entry<Annotation, Position> entry : newMarkers.entrySet()) {
