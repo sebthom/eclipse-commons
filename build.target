@@ -19,12 +19,13 @@
             <repository location="https://download.eclipse.org/eclipse/updates/4.17/"/>
             <unit id="org.eclipse.test.feature.group" version="0.0.0"/>
         </location>
+
         <location includeDependencyDepth="infinite" includeDependencyScopes="compile" includeSource="true" missingManifest="generate" type="Maven">
             <dependencies>
                 <dependency>
                     <groupId>net.sf.jstuff</groupId>
                     <artifactId>jstuff-core</artifactId>
-                    <version>6.0.1</version>
+                    <version>7.0.0</version>
                     <type>jar</type>
                 </dependency>
             </dependencies>
