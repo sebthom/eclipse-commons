@@ -28,7 +28,6 @@ public abstract class Projects {
       final var project = Adapters.adapt(adaptable, IProject.class);
       if (project != null)
          return project;
-      @SuppressWarnings("unused")
       final var resource = Adapters.adapt(adaptable, IResource.class);
       if (resource != null)
          return resource.getProject();

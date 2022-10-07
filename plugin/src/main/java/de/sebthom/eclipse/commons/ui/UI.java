@@ -71,7 +71,6 @@ public abstract class UI {
    }
 
    @Nullable
-   @SuppressWarnings("unused") // annotation-based null-analysis false positive
    public static IProject getActiveProject(final IWorkbenchWindow window) {
       try {
          final var sel = window.getSelectionService().getSelection();
@@ -87,14 +86,7 @@ public abstract class UI {
             final var activeEditor = activePage.getActiveEditor();
             if (activeEditor != null) {
                final var input = activeEditor.getEditorInput();
-               final var project = input.getAdapter(IProject.class);
-               if (project != null)
-                  return project;
-
-               final IResource resource = input.getAdapter(IResource.class);
-               if (resource == null)
-                  return null;
-               return resource.getProject();
+               return Projects.adapt(input);
             }
          }
       } catch (final Exception ex) {
@@ -155,11 +147,17 @@ public abstract class UI {
 
    /**
     * @return the current shell
+    * @throws IllegalStateException if no shell is available
     */
-   @Nullable
    public static Shell getShell() {
       final var window = getActiveWorkbenchWindow();
-      return window == null ? getDisplay().getActiveShell() : window.getShell();
+      Shell shell = window == null ? null : window.getShell();
+      if (shell == null) {
+         shell = getDisplay().getActiveShell();
+      }
+      if (shell == null)
+         throw new IllegalStateException("No open shell found!");
+      return shell;
    }
 
    @Nullable
@@ -183,8 +181,10 @@ public abstract class UI {
 
    public static void maximize(final IWorkbenchPart part) {
       final var site = part.getSite();
-      final var handlerService = site.getService(IHandlerService.class);
+      if (site == null)
+         return;
       try {
+         final var handlerService = site.getService(IHandlerService.class);
          handlerService.executeCommand(IWorkbenchCommandConstants.WINDOW_MAXIMIZE_ACTIVE_VIEW_OR_EDITOR, null);
       } catch (final Exception ex) {
          ex.printStackTrace();
@@ -192,8 +192,8 @@ public abstract class UI {
    }
 
    public static void maximize(final IWorkbenchWindow window) {
-      final var handlerService = window.getWorkbench().getService(IHandlerService.class);
       try {
+         final var handlerService = window.getWorkbench().getService(IHandlerService.class);
          handlerService.executeCommand(IWorkbenchCommandConstants.WINDOW_MAXIMIZE_ACTIVE_VIEW_OR_EDITOR, null);
       } catch (final Exception ex) {
          ex.printStackTrace();

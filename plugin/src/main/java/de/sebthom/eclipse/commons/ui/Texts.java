@@ -25,7 +25,7 @@ public abstract class Texts extends Controls {
     * two-way bind
     */
    public static <E> void bind(final Text widget, final MutableObservableRef<@Nullable E> model, final Function<String, E> widget2model,
-      final Function<E, @Nullable String> model2widget) {
+      final Function<@Nullable E, @Nullable String> model2widget) {
       final var initialVal = model.get();
       if (initialVal != null) {
          widget.setText(model2widget.apply(initialVal));
@@ -33,7 +33,7 @@ public abstract class Texts extends Controls {
 
       widget.addModifyListener(ev -> model.set(widget2model.apply(widget.getText())));
 
-      final Consumer<E> onModelChanged = newValue -> UI.run(() -> {
+      final Consumer<@Nullable E> onModelChanged = newValue -> UI.run(() -> {
          final var oldTxt = widget.getText();
          var newTxt = model2widget.apply(newValue);
          if (newTxt == null) {

@@ -4,7 +4,6 @@
  */
 package de.sebthom.eclipse.commons.ui.listener;
 
-import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchWindow;
 
@@ -14,18 +13,18 @@ import org.eclipse.ui.IWorkbenchWindow;
 public interface WindowListener extends IWindowListener {
 
    @Override
-   default void windowActivated(@Nullable final IWorkbenchWindow window) {
+   default void windowActivated(final IWorkbenchWindow window) {
    }
 
    @Override
-   default void windowDeactivated(@Nullable final IWorkbenchWindow window) {
+   default void windowDeactivated(final IWorkbenchWindow window) {
    }
 
    @Override
-   default void windowClosed(@Nullable final IWorkbenchWindow window) {
+   default void windowClosed(final IWorkbenchWindow window) {
    }
 
    @Override
-   default void windowOpened(@Nullable final IWorkbenchWindow window) {
+   default void windowOpened(final IWorkbenchWindow window) {
    }
 }

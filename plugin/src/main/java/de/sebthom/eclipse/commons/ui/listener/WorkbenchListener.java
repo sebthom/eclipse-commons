@@ -4,7 +4,6 @@
  */
 package de.sebthom.eclipse.commons.ui.listener;
 
-import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 
@@ -14,12 +13,12 @@ import org.eclipse.ui.IWorkbenchListener;
 public interface WorkbenchListener extends IWorkbenchListener {
 
    @Override
-   default boolean preShutdown(@Nullable final IWorkbench workbench, final boolean forced) {
+   default boolean preShutdown(final IWorkbench workbench, final boolean forced) {
       return true;
    }
 
    @Override
-   default void postShutdown(@Nullable final IWorkbench workbench) {
+   default void postShutdown(final IWorkbench workbench) {
    }
 
 }

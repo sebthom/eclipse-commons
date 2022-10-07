@@ -40,19 +40,22 @@ public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
    protected final String pluginId = getBundle().getSymbolicName();
 
    public BundleResources getBundleResources() {
+      var bundleResources = this.bundleResources;
       if (bundleResources == null) {
-         bundleResources = new BundleResources(this);
+         bundleResources = this.bundleResources = new BundleResources(this);
       }
       return bundleResources;
    }
 
+   @Nullable
    public ImageDescriptor getImageDescriptor(final String path) {
-      return imageDescriptorFromPlugin(getBundle().getSymbolicName(), path);
+      return imageDescriptorFromPlugin(pluginId, path);
    }
 
    public PluginLogger getLogger() {
+      var logger = this.logger;
       if (logger == null) {
-         logger = new PluginLogger(this);
+         logger = this.logger = new PluginLogger(this);
       }
       return logger;
    }
@@ -63,8 +66,9 @@ public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
 
    @Override
    public IPersistentPreferenceStore getPreferenceStore() {
+      var preferenceStore = this.preferenceStore;
       if (preferenceStore == null) {
-         preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, pluginId);
+         preferenceStore = this.preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, pluginId);
       }
       return preferenceStore;
    }
@@ -86,7 +90,7 @@ public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
    public ImageDescriptor getSharedImageDescriptor(final String path) {
       Args.notNull("path", path);
 
-      return imageDescriptorFromPlugin(getBundle().getSymbolicName(), path);
+      return imageDescriptorFromPlugin(pluginId, path);
    }
 
    protected void registerImage(final ImageRegistry registry, final String path) {
@@ -103,20 +107,21 @@ public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
    }
 
    public StatusFactory getStatusFactory() {
+      var statusFactory = this.statusFactory;
       if (statusFactory == null) {
-         statusFactory = new StatusFactory(this);
+         statusFactory = this.statusFactory = new StatusFactory(this);
       }
       return statusFactory;
    }
 
    @Override
-   public void start(@NonNullByDefault({}) final BundleContext context) throws Exception {
+   public void start(final BundleContext context) throws Exception {
       getLogger().info("starting...");
       super.start(context);
    }
 
    @Override
-   public void stop(@NonNullByDefault({}) final BundleContext context) throws Exception {
+   public void stop(final BundleContext context) throws Exception {
       getLogger().info("stopping...");
       super.stop(context);
    }

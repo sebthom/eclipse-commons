@@ -53,7 +53,7 @@ public class StatusFactory {
    }
 
    public IStatus createStatus(final int severity, @Nullable final String msg, final Object... msgArgs) {
-      if (msgArgs == null || msgArgs.length == 0)
+      if (msgArgs.length == 0)
          return new Status(severity, pluginId, msg);
       return new Status(severity, pluginId, NLS.bind(msg, msgArgs));
    }

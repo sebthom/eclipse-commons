@@ -4,6 +4,7 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -34,7 +35,6 @@ public abstract class Editors {
    }
 
    @Nullable
-   @SuppressWarnings("unused") // annotation-based null-analysis false positive
    public static ITextEditor getActiveTextEditor() {
       final var editor = getActiveEditor();
       if (editor == null)
@@ -49,11 +49,7 @@ public abstract class Editors {
             return textEditor;
       }
 
-      final Object adapter = editor.getAdapter(ITextEditor.class);
-      if (adapter != null)
-         return (ITextEditor) adapter;
-
-      return null;
+      return Adapters.adapt(editor, ITextEditor.class);
    }
 
    @Nullable

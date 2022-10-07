@@ -4,7 +4,8 @@
  */
 package de.sebthom.eclipse.commons.system.win;
 
-import java.util.Arrays;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -24,9 +25,9 @@ public class WindowsRegistry {
 
    private static final String KEY_PATH_SEPARATOR = "\\";
 
-   public static final WindowsRegistry HKEY_CLASSES_ROOT = new WindowsRegistry(WinReg.HKEY_CLASSES_ROOT);
-   public static final WindowsRegistry HKEY_CURRENT_USER = new WindowsRegistry(WinReg.HKEY_CURRENT_USER);
-   public static final WindowsRegistry HKEY_LOCAL_MACHINE = new WindowsRegistry(WinReg.HKEY_LOCAL_MACHINE);
+   public static final WindowsRegistry HKEY_CLASSES_ROOT = new WindowsRegistry(asNonNullUnsafe(WinReg.HKEY_CLASSES_ROOT));
+   public static final WindowsRegistry HKEY_CURRENT_USER = new WindowsRegistry(asNonNullUnsafe(WinReg.HKEY_CURRENT_USER));
+   public static final WindowsRegistry HKEY_LOCAL_MACHINE = new WindowsRegistry(asNonNullUnsafe(WinReg.HKEY_LOCAL_MACHINE));
 
    public static void assertSupported() {
       if (!isSupported())
@@ -93,6 +94,7 @@ public class WindowsRegistry {
       return deleteKey(keyParentPath + KEY_PATH_SEPARATOR + keyName, recursive);
    }
 
+   @SuppressWarnings("null")
    public List<String> getKeys(final String keyPath) {
       Args.notEmpty("keyPath", keyPath);
 
@@ -101,7 +103,7 @@ public class WindowsRegistry {
       if (!hasKey(keyPath))
          return Collections.emptyList();
 
-      return Arrays.asList(Advapi32Util.registryGetKeys(root, keyPath));
+      return List.of(Advapi32Util.registryGetKeys(root, keyPath));
    }
 
    public List<String> getKeys(final String keyParentPath, final String keyName) {

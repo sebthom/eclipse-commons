@@ -4,8 +4,6 @@
  */
 package de.sebthom.eclipse.commons.ui.widgets;
 
-import static de.sebthom.eclipse.commons.util.NullAnalysisHelper.*;
-
 import org.eclipse.jface.action.CoolBarManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.ToolBarManager;
@@ -53,7 +51,7 @@ public abstract class CompositeWithToolBar extends Composite {
    protected CompositeWithToolBar(final IManagedForm managedForm, final Composite parent, final int style) {
       this(parent, style);
 
-      final var formToolkit = castNonNull(managedForm.getToolkit());
+      final var formToolkit = managedForm.getToolkit();
       formToolkit.adapt(this);
       formToolkit.adapt(viewForm);
       formToolkit.adapt(contentArea);

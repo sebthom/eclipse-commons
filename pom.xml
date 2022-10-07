@@ -67,7 +67,7 @@
             </plugin>
 
             <plugin>
-               <!-- https://www.eclipse.org/tycho/sitedocs/tycho-compiler-plugin/plugin-info.html -->
+               <!-- https://tycho.eclipseprojects.io/doc/3.0.0/tycho-compiler-plugin/plugin-info.html -->
                <groupId>org.eclipse.tycho</groupId>
                <artifactId>tycho-compiler-plugin</artifactId>
                <version>${tycho.version}</version>

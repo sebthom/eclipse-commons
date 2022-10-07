@@ -4,6 +4,8 @@
  */
 package de.sebthom.eclipse.commons.localization;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,9 +13,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.osgi.util.NLS;
 
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Fields;
@@ -47,18 +49,20 @@ public final class MessagesInitializer {
             if (locale.lastIndexOf('_') == -1) {
                break;
             }
-            locale = StringUtils.substringBeforeLast(locale, "_");
+            locale = Strings.substringBeforeLast(locale, "_");
          }
          messagePropFiles.add(root + ".properties");
          Collections.reverse(messagePropFiles);
       }
+
+      final var cl = asNonNullUnsafe(messagesClass.getClassLoader());
 
       /*
        * load values from all .properties files
        */
       final var messageProps = new Properties();
       for (final String variant : messagePropFiles) {
-         try (var input = messagesClass.getClassLoader().getResourceAsStream(variant)) {
+         try (var input = cl.getResourceAsStream(variant)) {
             if (input != null) {
                messageProps.load(input);
             }
@@ -71,8 +75,10 @@ public final class MessagesInitializer {
        * load plugin.xml as String to later check for references to message properties
        */
       var pluginXml = "";
-      try (var is = messagesClass.getClassLoader().getResourceAsStream("/plugin.xml")) {
-         pluginXml = IOUtils.toString(is);
+      try (var is = cl.getResourceAsStream("/plugin.xml")) {
+         if (is != null) {
+            pluginXml = IOUtils.toString(is);
+         }
       } catch (final IOException ex) {
          LOG.error(ex);
       }

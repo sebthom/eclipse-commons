@@ -6,7 +6,6 @@ package de.sebthom.eclipse.commons.ui;
 
 import java.util.function.Consumer;
 
-import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -28,7 +27,7 @@ public abstract class Buttons extends Controls {
     */
    public static void bind(final Button button, final MutableObservableRef<Boolean> model) {
       final Consumer<Boolean> onModelChanged = newValue -> UI.run(() -> {
-         final var select = newValue != null && newValue;
+         final boolean select = newValue;
          if (button.getSelection() != select) {
             button.setSelection(select);
          }
@@ -38,7 +37,7 @@ public abstract class Buttons extends Controls {
       button.setSelection(model.get());
       button.addSelectionListener(new SelectionAdapter() {
          @Override
-         public void widgetSelected(@Nullable final SelectionEvent ev) {
+         public void widgetSelected(final SelectionEvent ev) {
             model.set(button.getSelection());
          }
       });
@@ -52,7 +51,7 @@ public abstract class Buttons extends Controls {
 
       final var listener = new SelectionAdapter() {
          @Override
-         public void widgetSelected(@Nullable final SelectionEvent ev) {
+         public void widgetSelected(final SelectionEvent ev) {
             handler.run();
          }
       };
@@ -66,7 +65,7 @@ public abstract class Buttons extends Controls {
 
       final var listener = new SelectionAdapter() {
          @Override
-         public void widgetSelected(@Nullable final SelectionEvent ev) {
+         public void widgetSelected(final SelectionEvent ev) {
             handler.run();
          }
       };

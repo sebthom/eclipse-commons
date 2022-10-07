@@ -4,8 +4,6 @@
  */
 package de.sebthom.eclipse.commons.ui.widgets;
 
-import static de.sebthom.eclipse.commons.util.NullAnalysisHelper.*;
-
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.notifications.AbstractNotificationPopup;
 import org.eclipse.swt.SWT;
@@ -21,17 +19,17 @@ import net.sf.jstuff.core.Strings;
  */
 public class NotificationPopup extends AbstractNotificationPopup {
 
-   private final @Nullable String title;
-   private final String message;
+   private final String title;
+   private final @Nullable String message;
 
-   public NotificationPopup(final Shell parent, final String message) {
+   public NotificationPopup(final Shell parent, @Nullable final String message) {
       super(parent.getDisplay());
       setParentShell(parent);
-      title = null;
+      title = "";
       this.message = message;
    }
 
-   public NotificationPopup(final Shell parent, final String title, final String message) {
+   public NotificationPopup(final Shell parent, final String title, @Nullable final String message) {
       super(parent.getDisplay());
       setParentShell(parent);
       this.title = title;
@@ -39,16 +37,15 @@ public class NotificationPopup extends AbstractNotificationPopup {
    }
 
    public NotificationPopup(final String message) {
-      this(castNonNull(UI.getShell()), message);
+      this(UI.getShell(), message);
    }
 
    public NotificationPopup(final String title, final String message) {
-      this(castNonNull(UI.getShell()), title, message);
+      this(UI.getShell(), title, message);
    }
 
    @Override
-   protected void createContentArea(@Nullable final Composite parent) {
-      assert parent != null;
+   protected void createContentArea(final Composite parent) {
       final var label = new StyledText(parent, SWT.WRAP);
       label.setEditable(false);
       label.setCaret(null);
@@ -58,6 +55,6 @@ public class NotificationPopup extends AbstractNotificationPopup {
 
    @Override
    protected String getPopupShellTitle() {
-      return Strings.isEmpty(title) ? super.getPopupShellTitle() : castNonNull(title);
+      return Strings.isEmpty(title) ? super.getPopupShellTitle() : title;
    }
 }

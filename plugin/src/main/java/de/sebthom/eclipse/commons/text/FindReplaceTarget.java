@@ -69,22 +69,24 @@ public class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTarget
    }
 
    @Override
-   public int findAndSelect(final int widgetOffset, @Nullable final String findString, final boolean searchForward,
-      final boolean caseSensitive, final boolean wholeWord) {
+   public int findAndSelect(final int widgetOffset, final String findString, final boolean searchForward, final boolean caseSensitive,
+      final boolean wholeWord) {
       return target.findAndSelect(widgetOffset, findString, searchForward, caseSensitive, wholeWord);
    }
 
    @Override
-   public int findAndSelect(final int offset, @Nullable final String findString, final boolean searchForward, final boolean caseSensitive,
+   public int findAndSelect(final int offset, final String findString, final boolean searchForward, final boolean caseSensitive,
       final boolean wholeWord, final boolean regExSearch) {
       return targetExt3.findAndSelect(offset, findString, searchForward, caseSensitive, wholeWord, regExSearch);
    }
 
+   @Nullable
    @Override
    public Point getLineSelection() {
       return targetExt.getLineSelection();
    }
 
+   @Nullable
    @Override
    public IRegion getScope() {
       return targetExt.getScope();
@@ -106,12 +108,12 @@ public class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTarget
    }
 
    @Override
-   public void replaceSelection(@Nullable final String text) {
+   public void replaceSelection(final String text) {
       target.replaceSelection(text);
    }
 
    @Override
-   public void replaceSelection(@Nullable final String text, final boolean regExReplace) {
+   public void replaceSelection(final String text, final boolean regExReplace) {
       targetExt3.replaceSelection(text, regExReplace);
    }
 

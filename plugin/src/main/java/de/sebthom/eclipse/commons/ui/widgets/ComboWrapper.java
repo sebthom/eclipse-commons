@@ -7,11 +7,13 @@ package de.sebthom.eclipse.commons.ui.widgets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -70,7 +72,8 @@ public class ComboWrapper<E> {
 
    @SuppressWarnings("unchecked")
    public Collection<E> getItems() {
-      return (Collection<E>) viewer.getInput();
+      final var input = (Collection<E>) viewer.getInput();
+      return input == null ? Collections.emptyList() : input;
    }
 
    @SuppressWarnings("unchecked")
@@ -114,8 +117,7 @@ public class ComboWrapper<E> {
          final var coll = (Collection<?>) input;
          return coll.toArray(Object[]::new);
       });
-      @SuppressWarnings("unchecked")
-      final var old = (Collection<E>) viewer.getInput();
+      final var old = getItems();
       viewer.setInput(items);
       for (final var l : itemsChangedListener) {
          try {
@@ -129,13 +131,15 @@ public class ComboWrapper<E> {
 
    public ComboWrapper<E> setItems(final Collection<E> items, final Comparator<E> comparator) {
       viewer.setContentProvider((IStructuredContentProvider) input -> {
+         if (input == null)
+            return ArrayUtils.EMPTY_OBJECT_ARRAY;
+
          @SuppressWarnings("unchecked")
          final var list = new ArrayList<>((Collection<E>) input);
          list.sort(comparator);
          return list.toArray(Object[]::new);
       });
-      @SuppressWarnings("unchecked")
-      final var old = (Collection<E>) viewer.getInput();
+      final var old = getItems();
       viewer.setInput(items);
       for (final var l : itemsChangedListener) {
          try {
@@ -164,9 +168,10 @@ public class ComboWrapper<E> {
       return this;
    }
 
-   public ComboWrapper<E> setLabelProvider(final Function<E, String> provider) {
+   public ComboWrapper<E> setLabelProvider(final Function<@Nullable E, String> provider) {
       viewer.setLabelProvider(new LabelProvider() {
          @SuppressWarnings("unchecked")
+         @Nullable
          @Override
          public String getText(@Nullable final Object item) {
             return provider.apply((E) item);
