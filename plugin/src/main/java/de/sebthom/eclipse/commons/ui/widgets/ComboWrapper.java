@@ -168,7 +168,7 @@ public class ComboWrapper<E> {
       return this;
    }
 
-   public ComboWrapper<E> setLabelProvider(final Function<@Nullable E, String> provider) {
+   public ComboWrapper<E> setLabelProvider(final Function<E, String> provider) {
       viewer.setLabelProvider(new LabelProvider() {
          @SuppressWarnings("unchecked")
          @Nullable
