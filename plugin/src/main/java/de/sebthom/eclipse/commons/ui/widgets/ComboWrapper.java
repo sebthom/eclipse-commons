@@ -102,7 +102,7 @@ public class ComboWrapper<E> {
    }
 
    @SuppressWarnings("unchecked")
-   public ComboWrapper<E> onSelectionChanged(final Consumer<E> listener) {
+   public ComboWrapper<E> onSelectionChanged(final Consumer<@Nullable E> listener) {
       viewer.addSelectionChangedListener(event -> listener.accept((E) event.getStructuredSelection().getFirstElement()));
       return this;
    }

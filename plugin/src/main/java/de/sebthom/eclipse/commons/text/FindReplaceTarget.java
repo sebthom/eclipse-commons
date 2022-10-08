@@ -37,7 +37,11 @@ public class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTarget
       if (editor == lastEditor)
          return lastFindReplaceTarget;
 
-      lastFindReplaceTarget = new FindReplaceTarget(editor);
+      final var findReplaceTarget = editor.getAdapter(IFindReplaceTarget.class);
+      if (findReplaceTarget == null)
+         return null;
+
+      lastFindReplaceTarget = new FindReplaceTarget(findReplaceTarget);
       return lastFindReplaceTarget;
    }
 
@@ -46,8 +50,8 @@ public class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTarget
    protected final IFindReplaceTargetExtension2 targetExt2;
    protected final IFindReplaceTargetExtension3 targetExt3;
 
-   protected FindReplaceTarget(final IWorkbenchPart editor) {
-      target = editor.getAdapter(IFindReplaceTarget.class);
+   protected FindReplaceTarget(final IFindReplaceTarget target) {
+      this.target = target;
       targetExt = (IFindReplaceTargetExtension) target;
       targetExt2 = (IFindReplaceTargetExtension2) target;
       targetExt3 = (IFindReplaceTargetExtension3) target;

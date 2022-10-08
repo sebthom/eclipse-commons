@@ -36,11 +36,11 @@ public class NotificationPopup extends AbstractNotificationPopup {
       this.message = message;
    }
 
-   public NotificationPopup(final String message) {
+   public NotificationPopup(final @Nullable String message) {
       this(UI.getShell(), message);
    }
 
-   public NotificationPopup(final String title, final String message) {
+   public NotificationPopup(final String title, final @Nullable String message) {
       this(UI.getShell(), title, message);
    }
 

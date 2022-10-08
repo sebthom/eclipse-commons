@@ -36,7 +36,7 @@ public class StatusFactory {
       return createStatus(IStatus.ERROR, ex, ex.getMessage());
    }
 
-   public IStatus createError(final Throwable ex, @Nullable final String msg, final Object... msgArgs) {
+   public IStatus createError(final @Nullable Throwable ex, @Nullable final String msg, final Object... msgArgs) {
       return createStatus(IStatus.ERROR, ex, msg, msgArgs);
    }
 

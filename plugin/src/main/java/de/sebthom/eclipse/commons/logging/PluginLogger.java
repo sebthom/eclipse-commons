@@ -78,7 +78,7 @@ public class PluginLogger {
       return status;
    }
 
-   public IStatus error(final Throwable ex, @Nullable final String msg, final Object... msgArgs) {
+   public IStatus error(final @Nullable Throwable ex, @Nullable final String msg, final Object... msgArgs) {
       final var status = statusFactory.createError(ex, msg, msgArgs);
       uiLog.log(status);
       return status;
