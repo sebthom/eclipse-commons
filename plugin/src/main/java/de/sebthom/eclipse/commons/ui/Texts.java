@@ -9,6 +9,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -25,8 +26,9 @@ public abstract class Texts extends Controls {
    /**
     * two-way bind
     */
-   public static <E> void bind(final Text widget, final MutableObservableRef<E> model, final Function<String, E> widget2model,
-      final Function<E, String> model2widget) {
+   @NonNullByDefault({}) // make <E>,<String> unspecified, i.e. allow @Nullable or @NonNull
+   public static <E> void bind(final @NonNull Text widget, final @NonNull MutableObservableRef<E> model,
+      final @NonNull Function<String, E> widget2model, final Function<E, String> model2widget) {
       final var initialVal = model.get();
       if (initialVal != null) {
          widget.setText(model2widget.apply(initialVal));
@@ -48,8 +50,9 @@ public abstract class Texts extends Controls {
    /**
     * two-way bind
     */
-   public static void bind(final Text widget, final MutableObservableRef<@NonNullByDefault({}) String> model) {
-      final Consumer<@NonNullByDefault({}) String> onModelChanged = newValue -> UI.run(() -> {
+   @NonNullByDefault({}) // make <String> unspecified, i.e. allow @Nullable or @NonNull
+   public static void bind(final @NonNull Text widget, final @NonNull MutableObservableRef<String> model) {
+      final Consumer<String> onModelChanged = newValue -> UI.run(() -> {
          final var oldTxt = widget.getText();
          final var newTxt = Strings.emptyIfNull(newValue);
          if (!Objects.equals(oldTxt, newTxt)) {
