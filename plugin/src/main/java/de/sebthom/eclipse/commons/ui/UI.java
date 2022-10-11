@@ -121,6 +121,9 @@ public abstract class UI {
 
    @Nullable
    public static IWorkbenchWindow getActiveWorkbenchWindow() {
+      if (!PlatformUI.isWorkbenchRunning())
+         return null;
+
       final var workbench = PlatformUI.getWorkbench();
       final var window = workbench.getActiveWorkbenchWindow();
       if (window == null) {
@@ -134,11 +137,10 @@ public abstract class UI {
     * @return the current display
     */
    public static Display getDisplay() {
-      var display = PlatformUI.getWorkbench().getDisplay();
-      if (display != null)
-         return display;
+      if (PlatformUI.isWorkbenchRunning())
+         return PlatformUI.getWorkbench().getDisplay();
 
-      display = Display.getCurrent();
+      final var display = Display.getCurrent();
       if (display != null)
          return display;
 
