@@ -4,6 +4,7 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.text.BadLocationException;
@@ -36,6 +37,11 @@ public abstract class Editors {
    }
 
    @Nullable
+   public static IFile getActiveFile() {
+      return getFile(getActiveEditor());
+   }
+
+   @Nullable
    public static ITextEditor getActiveTextEditor() {
       final var editor = getActiveEditor();
       if (editor == null)
@@ -51,6 +57,16 @@ public abstract class Editors {
       }
 
       return Adapters.adapt(editor, ITextEditor.class);
+   }
+
+   @Nullable
+   public static String getActiveTextSelection() {
+      final var editor = getActiveTextEditor();
+      if (editor == null)
+         return null;
+      if (editor.getSelectionProvider().getSelection() instanceof final ITextSelection sel)
+         return sel.getText();
+      return null;
    }
 
    @Nullable
@@ -74,13 +90,13 @@ public abstract class Editors {
    }
 
    @Nullable
-   public static String getActiveTextSelection() {
-      final var editor = getActiveTextEditor();
+   public static IFile getFile(@Nullable final IEditorPart editor) {
       if (editor == null)
          return null;
-      if (editor.getSelectionProvider().getSelection() instanceof final ITextSelection sel)
-         return sel.getText();
-      return null;
+      final var input = editor.getEditorInput();
+      if (input == null)
+         return null;
+      return input.getAdapter(IFile.class);
    }
 
    public static boolean replaceCurrentSelection(final String replacement, final boolean selectReplacement) {
