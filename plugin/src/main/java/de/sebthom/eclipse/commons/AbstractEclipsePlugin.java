@@ -4,6 +4,8 @@
  */
 package de.sebthom.eclipse.commons;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -37,7 +39,7 @@ public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
    @NonNullByDefault({})
    protected StatusFactory statusFactory;
 
-   protected final String pluginId = getBundle().getSymbolicName();
+   protected final String pluginId = asNonNull(getBundle().getSymbolicName());
 
    public BundleResources getBundleResources() {
       var bundleResources = this.bundleResources;

@@ -4,6 +4,8 @@
  */
 package de.sebthom.eclipse.commons.logging;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
@@ -11,6 +13,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
 
+import de.sebthom.eclipse.commons.AbstractEclipsePlugin;
 import net.sf.jstuff.core.Strings;
 
 /**
@@ -20,12 +23,16 @@ public class StatusFactory {
 
    private final String pluginId;
 
+   public StatusFactory(final AbstractEclipsePlugin plugin) {
+      pluginId = plugin.getPluginId();
+   }
+
    public StatusFactory(final Bundle bundle) {
-      pluginId = bundle.getSymbolicName();
+      pluginId = asNonNull(bundle.getSymbolicName());
    }
 
    public StatusFactory(final Plugin plugin) {
-      pluginId = plugin.getBundle().getSymbolicName();
+      this(plugin.getBundle());
    }
 
    public IStatus createError(@Nullable final String msg, final Object... msgArgs) {
