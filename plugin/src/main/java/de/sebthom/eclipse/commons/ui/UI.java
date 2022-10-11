@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -124,7 +125,7 @@ public abstract class UI {
       if (!PlatformUI.isWorkbenchRunning())
          return null;
 
-      final var workbench = PlatformUI.getWorkbench();
+      final var workbench = getWorkbench();
       final var window = workbench.getActiveWorkbenchWindow();
       if (window == null) {
          final var windows = workbench.getWorkbenchWindows();
@@ -138,7 +139,7 @@ public abstract class UI {
     */
    public static Display getDisplay() {
       if (PlatformUI.isWorkbenchRunning())
-         return PlatformUI.getWorkbench().getDisplay();
+         return getWorkbench().getDisplay();
 
       final var display = Display.getCurrent();
       if (display != null)
@@ -175,6 +176,15 @@ public abstract class UI {
          return view.getActionBars().getStatusLineManager();
 
       return null;
+   }
+
+   /**
+    * @throws IllegalStateException if {@link PlatformUI#isWorkbenchRunning()} is false
+    *
+    * @see PlatformUI#getWorkbench()
+    */
+   public static IWorkbench getWorkbench() {
+      return PlatformUI.getWorkbench();
    }
 
    public static boolean isUIThread() {
