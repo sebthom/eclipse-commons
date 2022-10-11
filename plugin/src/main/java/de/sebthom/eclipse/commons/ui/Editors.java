@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IEditorPart;
@@ -70,6 +71,16 @@ public abstract class Editors {
       if (docProvider == null)
          return null;
       return docProvider.getDocument(editor.getEditorInput());
+   }
+
+   @Nullable
+   public static String getActiveTextSelection() {
+      final var editor = getActiveTextEditor();
+      if (editor == null)
+         return null;
+      if (editor.getSelectionProvider().getSelection() instanceof final ITextSelection sel)
+         return sel.getText();
+      return null;
    }
 
    public static boolean replaceCurrentSelection(final String replacement, final boolean selectReplacement) {
