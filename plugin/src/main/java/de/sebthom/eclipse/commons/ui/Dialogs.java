@@ -19,36 +19,22 @@ import org.eclipse.ui.statushandlers.StatusManager;
 public abstract class Dialogs {
 
    public static void showError(@Nullable final String title, @Nullable final String msg, final Object... msgArgs) {
-      if (UI.isUIThread()) {
-         showErrorInternal(title, msg, msgArgs);
-         return;
-      }
-      UI.run(() -> showErrorInternal(title, msg, msgArgs));
-   }
-
-   private static void showErrorInternal(@Nullable final String title, @Nullable final String msg, final Object... msgArgs) {
-      MessageDialog.openError(UI.getShell(), title, ArrayUtils.isEmpty(msgArgs) ? msg : NLS.bind(msg, msgArgs));
+      UI.run(() -> MessageDialog.openError(UI.getShell(), title, ArrayUtils.isEmpty(msgArgs) ? msg : NLS.bind(msg, msgArgs)));
    }
 
    public static void showWarning(@Nullable final String title, @Nullable final String msg, final Object... msgArgs) {
-      if (UI.isUIThread()) {
-         showWarningInternal(title, msg, msgArgs);
-         return;
-      }
-      UI.run(() -> showWarningInternal(title, msg, msgArgs));
-   }
-
-   private static void showWarningInternal(@Nullable final String title, @Nullable final String msg, final Object... msgArgs) {
-      MessageDialog.openWarning(UI.getShell(), title, ArrayUtils.isEmpty(msgArgs) ? msg : NLS.bind(msg, msgArgs));
+      UI.run(() -> MessageDialog.openWarning(UI.getShell(), title, ArrayUtils.isEmpty(msgArgs) ? msg : NLS.bind(msg, msgArgs)));
    }
 
    public static void showStatus(@Nullable final String title, final IStatus status, final boolean log) {
-      final var statusAdapter = new StatusAdapter(status);
-      statusAdapter.setProperty(IStatusAdapterConstants.TITLE_PROPERTY, title);
-      var style = StatusManager.SHOW | StatusManager.BLOCK;
-      if (log) {
-         style = style | StatusManager.LOG;
-      }
-      StatusManager.getManager().handle(statusAdapter, style);
+      UI.run(() -> {
+         final var statusAdapter = new StatusAdapter(status);
+         statusAdapter.setProperty(IStatusAdapterConstants.TITLE_PROPERTY, title);
+         var style = StatusManager.SHOW | StatusManager.BLOCK;
+         if (log) {
+            style = style | StatusManager.LOG;
+         }
+         StatusManager.getManager().handle(statusAdapter, style);
+      });
    }
 }
