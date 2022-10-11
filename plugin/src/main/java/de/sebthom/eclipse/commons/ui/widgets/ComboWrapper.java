@@ -77,7 +77,7 @@ public class ComboWrapper<E> {
    }
 
    @SuppressWarnings("unchecked")
-   public E getSelection() {
+   public @Nullable E getSelection() {
       return (E) ((IStructuredSelection) viewer.getSelection()).getFirstElement();
    }
 
