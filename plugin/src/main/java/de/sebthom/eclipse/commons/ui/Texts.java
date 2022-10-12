@@ -28,7 +28,7 @@ public abstract class Texts extends Controls {
     */
    @NonNullByDefault({}) // make <E>,<String> unspecified, i.e. allow @Nullable or @NonNull
    public static <E> void bind(final @NonNull Text widget, final @NonNull MutableObservableRef<E> model,
-      final @NonNull Function<String, E> widget2model, final Function<E, String> model2widget) {
+      final @NonNull Function<@NonNull String, E> widget2model, final Function<E, String> model2widget) {
       final var initialVal = model.get();
       if (initialVal != null) {
          widget.setText(model2widget.apply(initialVal));
