@@ -14,11 +14,16 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Widget;
 
 /**
  * @author Sebastian Thomschke
  */
 public abstract class Controls {
+
+   public static boolean hasStyle(final Widget widget, final int style) {
+      return (widget.getStyle() & style) == style;
+   }
 
    public static FocusListener onFocused(final Control control, final Consumer<FocusEvent> handler) {
       final var listener = new FocusAdapter() {
@@ -57,4 +62,5 @@ public abstract class Controls {
       control.addKeyListener(listener);
       return listener;
    }
+
 }
