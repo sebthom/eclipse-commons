@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class LabelFieldEditor extends FieldEditor {
 
-   private GridData labelLayoutData = eventuallyNonNull();
+   private GridData labelLayoutData = lazyNonNull();
 
    public LabelFieldEditor(final String value, final Composite parent) {
       super("unused", value, parent);
