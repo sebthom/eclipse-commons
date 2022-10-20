@@ -114,8 +114,8 @@ public class ComboWrapper<E> {
       });
    }
 
-   public ComboWrapper<E> bind(final MutableObservableRef<@Nullable E> model) {
-      final Consumer<@Nullable E> onModelChanged = newValue -> UI.run(() -> setSelection(newValue));
+   public ComboWrapper<E> bind(final MutableObservableRef<E> model) {
+      final Consumer<E> onModelChanged = newValue -> UI.run(() -> setSelection(newValue));
       model.subscribe(onModelChanged);
 
       setSelection(model.get());
@@ -164,7 +164,7 @@ public class ComboWrapper<E> {
    }
 
    @SuppressWarnings("unchecked")
-   public ComboWrapper<E> onSelectionChanged(final Consumer<@Nullable E> listener) {
+   public ComboWrapper<E> onSelectionChanged(final Consumer<E> listener) {
       viewer.addSelectionChangedListener(event -> listener.accept((E) event.getStructuredSelection().getFirstElement()));
       return this;
    }
