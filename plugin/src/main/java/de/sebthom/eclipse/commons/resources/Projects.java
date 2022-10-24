@@ -5,21 +5,18 @@
 package de.sebthom.eclipse.commons.resources;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import de.sebthom.eclipse.commons.internal.EclipseCommonsPlugin;
@@ -63,18 +60,11 @@ public abstract class Projects {
 
       final var projectCfg = project.getDescription();
       final var newNatureIds = ArrayUtils.add(projectCfg.getNatureIds(), natureId);
-      final var status = ResourcesPlugin.getWorkspace().validateNatureSet(newNatureIds);
+      final var status = Resources.getWorkspace().validateNatureSet(newNatureIds);
       if (status.getCode() != IStatus.OK)
          throw new CoreException(status);
       projectCfg.setNatureIds(newNatureIds);
       project.setDescription(projectCfg, monitor);
-   }
-
-   public static List<IProject> findOpenProjectsWithNature(final @Nullable String natureId) {
-      if (natureId == null || natureId.length() == 0)
-         return Collections.emptyList();
-
-      return findProjects(project -> project.isOpen() && hasNature(project, natureId));
    }
 
    public static @Nullable IProject findOpenProjectWithNature(final @Nullable String projectName, final @Nullable String natureId) {
@@ -93,7 +83,7 @@ public abstract class Projects {
       if (resourcePath == null)
          return null;
 
-      for (final var container : ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(resourcePath)) {
+      for (final var container : Resources.getWorkspaceRoot().findContainersForLocation(resourcePath)) {
          if (container instanceof final IProject project)
             return project;
       }
@@ -107,38 +97,50 @@ public abstract class Projects {
       if (resourceURI == null)
          return null;
 
-      for (final var container : ResourcesPlugin.getWorkspace().getRoot().findContainersForLocationURI(resourceURI)) {
+      for (final var container : Resources.getWorkspaceRoot().findContainersForLocationURI(resourceURI)) {
          if (container instanceof final IProject project)
             return project;
       }
       return null;
    }
 
-   public static List<IProject> findProjects(final Predicate<IProject> filter) {
-      final var projects = new ArrayList<IProject>();
-      for (final var project : getProjects()) {
-         if (filter.test(project)) {
-            projects.add(project);
-         }
-      }
-      return projects;
+   public static Stream<IProject> getOpenProjects() {
+      return getProjects().filter(IProject::isOpen);
+   }
+
+   public static Stream<IProject> getOpenProjects(final Predicate<IProject> filter) {
+      return getOpenProjects().filter(filter);
+   }
+
+   public static Stream<IProject> getOpenProjectsWithNature(final @Nullable String natureId) {
+      if (natureId == null || natureId.length() == 0)
+         return Stream.empty();
+
+      return getOpenProjects(project -> hasNature(project, natureId));
    }
 
    /**
     * @see IWorkspaceRoot#getProject(String)
     */
    public static IProject getProject(final String projectName) {
-      return ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+      return Resources.getWorkspaceRoot().getProject(projectName);
    }
 
    /**
     * @see IWorkspaceRoot#getProjects()
     */
-   public static @NonNull IProject[] getProjects() {
-      return ResourcesPlugin.getWorkspace().getRoot().getProjects();
+   public static Stream<IProject> getProjects() {
+      return Arrays.stream(Resources.getWorkspaceRoot().getProjects());
    }
 
-   public static final boolean hasBuilder(final IProject project, final String builderId) throws CoreException {
+   public static Stream<IProject> getProjects(final Predicate<IProject> filter) {
+      return getProjects().filter(filter);
+   }
+
+   public static final boolean hasBuilder(@Nullable final IProject project, final String builderId) throws CoreException {
+      if (project == null)
+         return false;
+
       for (final var builder : project.getDescription().getBuildSpec()) {
          if (builderId.equals(builder.getBuilderName()))
             return true;
