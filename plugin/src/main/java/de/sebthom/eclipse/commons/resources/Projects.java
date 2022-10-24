@@ -58,7 +58,7 @@ public abstract class Projects {
       throws CoreException {
       Args.notEmpty("natureId", natureId);
 
-      if (project.hasNature(natureId))
+      if (hasNature(project, natureId))
          return;
 
       final var projectCfg = project.getDescription();
@@ -176,7 +176,7 @@ public abstract class Projects {
       throws CoreException {
       Args.notEmpty("natureId", natureId);
 
-      if (!project.hasNature(natureId))
+      if (!hasNature(project, natureId))
          return;
 
       final var projectCfg = project.getDescription();
