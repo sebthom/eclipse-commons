@@ -4,8 +4,7 @@
  */
 package de.sebthom.eclipse.commons.prefs.fieldeditor;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
-
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -17,7 +16,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class LabelFieldEditor extends FieldEditor {
 
-   private GridData labelLayoutData = lazyNonNull();
+   private @Nullable GridData labelLayoutData;
 
    public LabelFieldEditor(final String value, final Composite parent) {
       super("unused", value, parent);
@@ -25,12 +24,17 @@ public class LabelFieldEditor extends FieldEditor {
 
    @Override
    protected void adjustForNumColumns(final int numColumns) {
-      labelLayoutData.horizontalSpan = numColumns;
+      final var labelLayoutData = this.labelLayoutData;
+      if (labelLayoutData != null) {
+         labelLayoutData.horizontalSpan = numColumns;
+      } else {
+         this.labelLayoutData = new GridData(GridData.FILL, GridData.CENTER, false, false, numColumns, 1);
+      }
    }
 
    @Override
    protected void doFillIntoGrid(final Composite parent, final int numColumns) {
-      labelLayoutData = new GridData(GridData.FILL, GridData.CENTER, false, false, numColumns, 1);
+      adjustForNumColumns(numColumns);
       getLabelControl(parent).setLayoutData(labelLayoutData);
    }
 
