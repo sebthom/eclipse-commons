@@ -4,12 +4,17 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
+
+import java.util.function.Supplier;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
@@ -30,6 +35,7 @@ import org.eclipse.ui.progress.IProgressConstants;
 
 import de.sebthom.eclipse.commons.internal.EclipseCommonsPlugin;
 import de.sebthom.eclipse.commons.resources.Projects;
+import net.sf.jstuff.core.ref.MutableRef;
 
 /**
  * @author Sebastian Thomschke
@@ -122,7 +128,7 @@ public abstract class UI {
 
    @Nullable
    public static IWorkbenchWindow getActiveWorkbenchWindow() {
-      if (!PlatformUI.isWorkbenchRunning())
+      if (!isWorkbenchRunning())
          return null;
 
       final var workbench = getWorkbench();
@@ -138,7 +144,7 @@ public abstract class UI {
     * @return the current display
     */
    public static Display getDisplay() {
-      if (PlatformUI.isWorkbenchRunning())
+      if (isWorkbenchRunning())
          return getWorkbench().getDisplay();
 
       final var display = Display.getCurrent();
@@ -191,6 +197,14 @@ public abstract class UI {
       return Display.getCurrent() != null;
    }
 
+   public static boolean isWorkbenchRunning() {
+      try {
+         return PlatformUI.isWorkbenchRunning();
+      } catch (final LinkageError ex) {
+         return false;
+      }
+   }
+
    public static void maximize(final IWorkbenchPart part) {
       final var site = part.getSite();
       if (site == null)
@@ -214,10 +228,16 @@ public abstract class UI {
 
    @Nullable
    public static IViewPart openProgressView() {
+      return openView(IProgressConstants.PROGRESS_VIEW_ID);
+   }
+
+   @Nullable
+   @SuppressWarnings("unchecked")
+   public static <T extends IViewPart> T openView(final String viewId) {
       try {
          final var page = getActiveWorkbenchPage();
          if (page != null)
-            return page.showView(IProgressConstants.PROGRESS_VIEW_ID);
+            return (T) page.showView(viewId);
       } catch (final Exception ex) {
          ex.printStackTrace();
       }
@@ -233,5 +253,18 @@ public abstract class UI {
       } else {
          getDisplay().asyncExec(runnable);
       }
+   }
+
+   /**
+    * Runs the given runnable asynchronous on the UI thread
+    *
+    * @throws SWTException if executing the runnable fails
+    */
+   public static <T> T run(final Supplier<T> runnable) {
+      if (isUIThread())
+         return runnable.get();
+      final MutableRef<@Nullable T> result = MutableRef.create();
+      getDisplay().syncExec(() -> result.set(runnable.get()));
+      return asNonNullUnsafe(result.get());
    }
 }
