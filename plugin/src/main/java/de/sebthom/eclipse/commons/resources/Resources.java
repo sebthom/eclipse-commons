@@ -59,7 +59,7 @@ public abstract class Resources {
    }
 
    public static File toAbsoluteFile(final IResource file) {
-      final var path = file.getRawLocation();
+      final var path = file.getLocation();
       if (path == null)
          throw new IllegalArgumentException("[file.rawLocation] is null");
       return path.makeAbsolute().toFile();
@@ -67,6 +67,10 @@ public abstract class Resources {
 
    public static Path toAbsolutePath(final IResource file) {
       return toAbsoluteFile(file).toPath();
+   }
+
+   public static Path toNormalizedPath(final IPath path) {
+      return path.toFile().toPath().normalize();
    }
 
    public static File toProjectRelativeFile(final IResource file) {
