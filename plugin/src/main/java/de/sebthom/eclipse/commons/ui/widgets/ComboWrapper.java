@@ -69,10 +69,9 @@ public class ComboWrapper<E> {
       combo.addFocusListener(new FocusAdapter() {
          @Override
          public void focusGained(final FocusEvent e) {
-            if (combo.getText().isEmpty()) {
-               // automatically open drop-down list if focused and no item was selected
-               combo.setListVisible(true);
-            }
+            // automatically open drop-down list if focused and no item was selected
+            UI.getDisplay().asyncExec(() -> combo.setListVisible(true));
+            // -> delaying it with asyncExec to prevent focus loss that happens for some reason
          }
       });
 
