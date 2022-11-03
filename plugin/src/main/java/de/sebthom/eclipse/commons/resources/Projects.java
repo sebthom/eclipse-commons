@@ -72,7 +72,7 @@ public abstract class Projects {
          return null;
 
       final var project = getProject(projectName);
-      return project.exists() && project.isOpen() && hasNature(project, natureId) ? project : null;
+      return project != null && project.isOpen() && hasNature(project, natureId) ? project : null;
    }
 
    /**
@@ -122,8 +122,12 @@ public abstract class Projects {
    /**
     * @see IWorkspaceRoot#getProject(String)
     */
-   public static IProject getProject(final String projectName) {
-      return Resources.getWorkspaceRoot().getProject(projectName);
+   public static @Nullable IProject getProject(final @Nullable String projectName) {
+      if (projectName == null || projectName.isEmpty())
+         return null;
+
+      final var project = Resources.getWorkspaceRoot().getProject(projectName);
+      return project.exists() ? project : null;
    }
 
    /**
