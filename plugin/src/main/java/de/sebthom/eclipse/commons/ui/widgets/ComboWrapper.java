@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -45,14 +46,15 @@ public class ComboWrapper<E> {
    private static final Logger LOG = Logger.create();
    private static final IStructuredSelection EMPTY_SELECTION = new StructuredSelection();
 
-   private Combo combo;
-   private ComboViewer viewer;
+   private final Combo combo;
+   private @Nullable Comparator<E> itemComparator;
+   private final ComboViewer viewer;
 
-   private CopyOnWriteArrayList<TriConsumer<ComboWrapper<E>, Collection<E>, Collection<E>>> itemsChangedListener = new CopyOnWriteArrayList<>();
+   private final CopyOnWriteArrayList<TriConsumer<ComboWrapper<E>, Collection<E>, Collection<E>>> itemsChangedListener = new CopyOnWriteArrayList<>();
 
    public ComboWrapper(final Combo combo) {
       this.combo = combo;
-      this.viewer = new ComboViewer(combo);
+      viewer = createComboViewer();
       if (!Controls.hasStyle(combo, SWT.READ_ONLY)) {
          configureAutoComplete();
       }
@@ -61,8 +63,29 @@ public class ComboWrapper<E> {
    public ComboWrapper(final Composite parent, final @Nullable Object layoutData) {
       combo = new Combo(parent, SWT.NONE);
       combo.setLayoutData(layoutData);
-      this.viewer = new ComboViewer(combo);
+      viewer = createComboViewer();
       configureAutoComplete();
+   }
+
+   private ComboViewer createComboViewer() {
+      final ComboViewer viewer = new ComboViewer(combo);
+      viewer.setContentProvider((IStructuredContentProvider) input -> {
+         if (input == null)
+            return ArrayUtils.EMPTY_OBJECT_ARRAY;
+
+         @SuppressWarnings("unchecked")
+         final var items = (Collection<E>) input;
+
+         final var comparator = this.itemComparator;
+         if (comparator == null)
+            return items.toArray();
+
+         @SuppressWarnings("unchecked")
+         final var sorted = new ArrayList<>((Collection<E>) input);
+         sorted.sort(comparator);
+         return sorted.toArray();
+      });
+      return viewer;
    }
 
    private void configureAutoComplete() {
@@ -72,6 +95,30 @@ public class ComboWrapper<E> {
             // automatically open drop-down list if focused and no item was selected
             UI.getDisplay().asyncExec(() -> combo.setListVisible(true));
             // -> delaying it with asyncExec to prevent focus loss that happens for some reason
+         }
+
+         @SuppressWarnings("unchecked")
+         @Override
+         public void focusLost(final FocusEvent e) {
+            final String text = combo.getText();
+            final String[] items = combo.getItems();
+
+            for (final String item : items) {
+               if (text.equals(item))
+                  return;
+            }
+            for (int i = 0; i < items.length; i++) {
+               if (text.equalsIgnoreCase(items[i])) {
+                  setSelection((E) viewer.getElementAt(i));
+                  return;
+               }
+            }
+            for (int i = 0; i < items.length; i++) {
+               if (Strings.startsWithIgnoreCase(items[i], text)) {
+                  setSelection((E) viewer.getElementAt(i));
+               }
+            }
+            clearSelection();
          }
       });
 
@@ -88,33 +135,42 @@ public class ComboWrapper<E> {
             }
          }
 
+         @SuppressWarnings("unchecked")
          @Override
          public void keyReleased(final KeyEvent keyEvent) {
             final String text = combo.getText();
+
+            if (text.isEmpty()) {
+               clearSelection();
+               return;
+            }
+
             final String[] items = combo.getItems();
 
             int matchingItem = -1;
-            for (int i = 0; i < items.length; i++) {
-               if (Strings.startsWithIgnoreCase(items[i], text)) {
-                  matchingItem = i;
-                  break;
+            if (matchingItem == -1) {
+               for (int i = 0; i < items.length; i++) {
+                  if (Strings.startsWithIgnoreCase(items[i], text)) {
+                     matchingItem = i;
+                     break;
+                  }
                }
             }
 
             if (matchingItem > -1) {
                final var pt = combo.getSelection();
-               combo.select(matchingItem);
+               setSelection((E) viewer.getElementAt(matchingItem));
                combo.setSelection(new Point(pt.x, items[matchingItem].length()));
             } else {
-               combo.select(prevItem);
+               setSelection((E) viewer.getElementAt(prevItem));
                combo.setSelection(prevTextSelection);
             }
          }
       });
    }
 
-   public ComboWrapper<E> bind(final MutableObservableRef<E> model) {
-      final Consumer<E> onModelChanged = newValue -> UI.run(() -> setSelection(newValue));
+   public ComboWrapper<E> bind(final MutableObservableRef<@Nullable E> model) {
+      final Consumer<@Nullable E> onModelChanged = newValue -> UI.run(() -> setSelection(newValue));
       model.subscribe(onModelChanged);
 
       setSelection(model.get());
@@ -124,8 +180,19 @@ public class ComboWrapper<E> {
       return this;
    }
 
+   public ComboWrapper<E> bind(final MutableObservableRef<@NonNull E> model, final @NonNull E defaultValue) {
+      final Consumer<@NonNull E> onModelChanged = newValue -> UI.run(() -> setSelection(newValue));
+      model.subscribe(onModelChanged);
+
+      setSelection(model.get());
+      onSelectionChanged(selection -> model.set(selection == null ? defaultValue : selection));
+
+      combo.addDisposeListener(ev -> model.unsubscribe(onModelChanged));
+      return this;
+   }
+
    public ComboWrapper<E> clearSelection() {
-      combo.clearSelection();
+      viewer.setSelection(EMPTY_SELECTION);
       return this;
    }
 
@@ -173,11 +240,13 @@ public class ComboWrapper<E> {
       return this;
    }
 
-   public ComboWrapper<E> setItems(final Collection<E> items) {
-      viewer.setContentProvider((IStructuredContentProvider) input -> {
-         final var coll = (Collection<?>) input;
-         return coll.toArray(Object[]::new);
-      });
+   public void setItemComparator(final @Nullable Comparator<E> itemComparator) {
+      this.itemComparator = itemComparator;
+   }
+
+   public synchronized ComboWrapper<E> setItems(final Collection<@NonNull E> items) {
+      final var selection = getSelection();
+
       final var old = getItems();
       viewer.setInput(items);
       for (final var l : itemsChangedListener) {
@@ -187,37 +256,15 @@ public class ComboWrapper<E> {
             LOG.error(ex);
          }
       }
-      return this;
-   }
-
-   public ComboWrapper<E> setItems(final Collection<E> items, final Comparator<E> comparator) {
-      viewer.setContentProvider((IStructuredContentProvider) input -> {
-         if (input == null)
-            return ArrayUtils.EMPTY_OBJECT_ARRAY;
-
-         @SuppressWarnings("unchecked")
-         final var list = new ArrayList<>((Collection<E>) input);
-         list.sort(comparator);
-         return list.toArray(Object[]::new);
-      });
-      final var old = getItems();
-      viewer.setInput(items);
-      for (final var l : itemsChangedListener) {
-         try {
-            l.accept(this, old, items);
-         } catch (final Exception ex) {
-            LOG.error(ex);
-         }
+      if (selection != null && items.contains(selection)) {
+         setSelection(selection);
       }
       return this;
    }
 
-   public ComboWrapper<E> setItems(@SuppressWarnings("unchecked") final E... items) {
+   @SafeVarargs
+   public final synchronized ComboWrapper<E> setItems(final @NonNull E... items) {
       return setItems(Arrays.asList(items));
-   }
-
-   public ComboWrapper<E> setItems(final E[] items, final Comparator<E> comparator) {
-      return setItems(Arrays.asList(items), comparator);
    }
 
    public ComboWrapper<E> setLabelComparator(@Nullable final Comparator<? super String> comparator) {
@@ -229,33 +276,40 @@ public class ComboWrapper<E> {
       return this;
    }
 
-   public ComboWrapper<E> setLabelProvider(final Function<E, String> provider) {
+   public ComboWrapper<E> setLabelProvider(final Function<@NonNull E, String> provider) {
       viewer.setLabelProvider(new LabelProvider() {
          @SuppressWarnings("unchecked")
          @Nullable
          @Override
          public String getText(@Nullable final Object item) {
+            if (item == null)
+               return "";
             return provider.apply((E) item);
          }
       });
       return this;
    }
 
-   public ComboWrapper<E> setSelection(@Nullable final E item) {
-      final var currentSelection = getSelection();
-      if (currentSelection == item)
-         return this;
-
-      viewer.setSelection(item == null ? EMPTY_SELECTION : new StructuredSelection(item));
-      return this;
+   public synchronized ComboWrapper<E> setSelection(@Nullable final E item) {
+      return setSelection(item, false);
    }
 
-   public ComboWrapper<E> setSelection(@Nullable final E item, final boolean reveal) {
+   public synchronized ComboWrapper<E> setSelection(@Nullable final E item, final boolean reveal) {
       final var currentSelection = getSelection();
       if (currentSelection == item)
          return this;
 
-      viewer.setSelection(item == null ? EMPTY_SELECTION : new StructuredSelection(item), reveal);
+      if (item == null) {
+         viewer.setSelection(EMPTY_SELECTION);
+         return this;
+      }
+
+      final var items = getItems();
+      if (items.isEmpty()) {
+         setItems(item);
+      }
+
+      viewer.setSelection(new StructuredSelection(item), reveal);
       return this;
    }
 }
