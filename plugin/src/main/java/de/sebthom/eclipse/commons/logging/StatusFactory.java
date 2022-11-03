@@ -4,7 +4,7 @@
  */
 package de.sebthom.eclipse.commons.logging;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
@@ -62,12 +62,12 @@ public class StatusFactory {
    public IStatus createStatus(final int severity, @Nullable final String msg, final Object... msgArgs) {
       if (msgArgs.length == 0)
          return new Status(severity, pluginId, msg);
-      return new Status(severity, pluginId, NLS.bind(msg, msgArgs));
+      return new Status(severity, pluginId, interpolateMessage(msg, msgArgs));
    }
 
    public IStatus createStatus(final int severity, @Nullable final Throwable ex, @Nullable final String msg, final Object... msgArgs) {
       final var statusMsg = Strings.isNotEmpty(msg) //
-         ? NLS.bind(msg, msgArgs) //
+         ? interpolateMessage(msg, msgArgs) //
          : ex == null //
             ? null //
             : Strings.isEmpty(ex.getMessage()) //
@@ -90,5 +90,11 @@ public class StatusFactory {
 
    public IStatus createWarning(final Throwable ex, @Nullable final String msg, final Object... msgArgs) {
       return createStatus(IStatus.WARNING, ex, msg, msgArgs);
+   }
+
+   private @Nullable String interpolateMessage(final @Nullable String msg, final Object... msgArgs) {
+      if (msgArgs.length == 0 || Strings.isEmpty(msg))
+         return msg;
+      return NLS.bind(msg, msgArgs);
    }
 }
