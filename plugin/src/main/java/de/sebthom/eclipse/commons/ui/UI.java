@@ -4,8 +4,6 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
-
 import java.util.function.Supplier;
 
 import org.eclipse.core.resources.IProject;
@@ -35,7 +33,6 @@ import org.eclipse.ui.progress.IProgressConstants;
 
 import de.sebthom.eclipse.commons.internal.EclipseCommonsPlugin;
 import de.sebthom.eclipse.commons.resources.Projects;
-import net.sf.jstuff.core.ref.MutableRef;
 
 /**
  * @author Sebastian Thomschke
@@ -245,26 +242,42 @@ public abstract class UI {
    }
 
    /**
-    * Runs the given runnable asynchronous on the UI thread
+    * Runs the given runnable synchronously on the UI thread
     */
    public static void run(final Runnable runnable) {
       if (isUIThread()) {
          runnable.run();
       } else {
-         getDisplay().asyncExec(runnable);
+         getDisplay().syncExec(runnable);
       }
    }
 
    /**
-    * Runs the given runnable asynchronous on the UI thread
+    * Runs the given runnable synchronously on the UI thread
     *
     * @throws SWTException if executing the runnable fails
     */
+   @SuppressWarnings("unchecked")
    public static <T> T run(final Supplier<T> runnable) {
       if (isUIThread())
          return runnable.get();
-      final MutableRef<@Nullable T> result = MutableRef.create();
-      getDisplay().syncExec(() -> result.set(runnable.get()));
-      return asNonNullUnsafe(result.get());
+
+      final var result = new Object[1];
+      getDisplay().syncExec(() -> result[0] = runnable.get());
+      return (T) result[0];
+   }
+
+   /**
+    * Runs the given runnable asynchronously on the UI thread
+    */
+   public static void runAsync(final Runnable runnable) {
+      getDisplay().asyncExec(runnable);
+   }
+
+   /**
+    * Runs the given runnable on the UI thread after the specified number of milliseconds have elapsed.
+    */
+   public static void runDelayed(final int delayMS, final Runnable runnable) {
+      getDisplay().timerExec(delayMS, runnable);
    }
 }
