@@ -2,9 +2,8 @@
 
 [![Build Status](https://github.com/sebthom/eclipse-commons/actions/workflows/build.yml/badge.svg)](https://github.com/sebthom/eclipse-commons/actions/workflows/build.yml)
 [![License](https://img.shields.io/github/license/sebthom/eclipse-commons.svg?color=blue)](LICENSE.txt)
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.1%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
-1. [About](#about)
 1. [What is it?](#what-is-it)
 1. [Installation](#installation)
 1. [Building from Sources](#building)
