@@ -12,7 +12,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.swt.widgets.Composite;
@@ -84,42 +83,42 @@ public class CheckboxTableWrapper<E> extends TableWrapper<E> {
    }
 
    @Override
-   public @NonNull CheckboxTableWrapper<E> setEnabled(final boolean enabled) {
+   public CheckboxTableWrapper<E> setEnabled(final boolean enabled) {
       return (CheckboxTableWrapper<E>) super.setEnabled(enabled);
    }
 
    @Override
-   public @NonNull CheckboxTableWrapper<E> setItems(@NonNull final Collection<E> items) {
+   public CheckboxTableWrapper<E> setItems(final Collection<E> items) {
       return (CheckboxTableWrapper<E>) super.setItems(items);
    }
 
    @Override
-   public @NonNull CheckboxTableWrapper<E> setItems(@NonNull final Collection<E> items, @NonNull final Comparator<E> comparator) {
+   public CheckboxTableWrapper<E> setItems(final Collection<E> items, final Comparator<E> comparator) {
       return (CheckboxTableWrapper<E>) super.setItems(items, comparator);
    }
 
    @Override
-   public @NonNull CheckboxTableWrapper<E> setItems(@SuppressWarnings("unchecked") final E @NonNull... items) {
+   public CheckboxTableWrapper<E> setItems(@SuppressWarnings("unchecked") final E... items) {
       return (CheckboxTableWrapper<E>) super.setItems(items);
    }
 
    @Override
-   public @NonNull CheckboxTableWrapper<E> setItems(final E @NonNull [] items, @NonNull final Comparator<E> comparator) {
+   public CheckboxTableWrapper<E> setItems(final E[] items, final Comparator<E> comparator) {
       return (CheckboxTableWrapper<E>) super.setItems(items, comparator);
    }
 
    @Override
-   public @NonNull CheckboxTableWrapper<E> setLabelComparator(@Nullable final Comparator<? super @NonNull String> comparator) {
+   public CheckboxTableWrapper<E> setLabelComparator(@Nullable final Comparator<? super String> comparator) {
       return (CheckboxTableWrapper<E>) super.setLabelComparator(comparator);
    }
 
    @Override
-   public @NonNull CheckboxTableWrapper<E> setLabelProvider(@NonNull final Function<E, @NonNull String> provider) {
+   public CheckboxTableWrapper<E> setLabelProvider(final Function<E, String> provider) {
       return (CheckboxTableWrapper<E>) super.setLabelProvider(provider);
    }
 
    @Override
-   public @NonNull CheckboxTableWrapper<E> setSelection(@Nullable final List<E> items) {
+   public CheckboxTableWrapper<E> setSelection(@Nullable final List<E> items) {
       return (CheckboxTableWrapper<E>) super.setSelection(items);
    }
 }
