@@ -18,14 +18,30 @@ import org.eclipse.jface.text.IDocument;
 public class DocumentInputStream extends InputStream {
 
    private final IDocument doc;
-   private int pos = 0;
+   private int nextPos = 0;
 
    public DocumentInputStream(final IDocument document) {
       doc = document;
    }
 
+   @Override
+   public int available() throws IOException {
+      return Math.max(0, doc.getLength() - nextPos);
+   }
+
    public IDocument getDocument() {
       return doc;
+   }
+
+   @Override
+   public int read() throws IOException {
+      try {
+         if (nextPos < doc.getLength())
+            return doc.getChar(nextPos++) & 0xFF;
+      } catch (final BadLocationException ex) {
+         // ignore
+      }
+      return -1;
    }
 
    @Override
@@ -36,20 +52,20 @@ public class DocumentInputStream extends InputStream {
          return 0;
 
       final var docLen = doc.getLength();
-      if (pos >= docLen)
+      if (nextPos >= docLen)
          return -1;
 
       var bytesRead = -1;
       try {
-         buff[buffOffset] = (byte) doc.getChar(pos++);
+         buff[buffOffset] = (byte) doc.getChar(nextPos++);
          bytesRead = 1;
 
          while (bytesRead < len) {
-            if (pos >= docLen) {
+            if (nextPos >= docLen) {
                break;
             }
 
-            buff[buffOffset + bytesRead++] = (byte) doc.getChar(pos++);
+            buff[buffOffset + bytesRead++] = (byte) doc.getChar(nextPos++);
          }
       } catch (final BadLocationException ex) {
          // ignore
@@ -58,13 +74,11 @@ public class DocumentInputStream extends InputStream {
    }
 
    @Override
-   public int read() throws IOException {
-      try {
-         if (pos < doc.getLength())
-            return doc.getChar(pos++) & 0xFF;
-      } catch (final BadLocationException ex) {
-         // ignore
-      }
-      return -1;
+   public long skip(long n) throws IOException {
+      if (n < 1)
+         return 0;
+      n = Math.min(n, available());
+      nextPos += n;
+      return n;
    }
 }
