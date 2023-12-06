@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!--
-   Copyright 2021-2022 by Sebastian Thomschke and contributors.
+   SPDX-FileCopyrightText: © Sebastian Thomschke and contributors.
+   SPDX-FileContributor: Sebastian Thomschke
    SPDX-License-Identifier: EPL-2.0
-
-   @author Sebastian Thomschke
+   SPDX-ArtifactOfProjectHomePage: https://github.com/sebthom/eclipse-commons
 -->
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -38,7 +38,7 @@
 
    <properties>
       <java.version>17</java.version>
-      <tycho.version>4.0.0</tycho.version>
+      <tycho.version>4.0.4</tycho.version>
 
       <!-- to prevent dozen of warnings like:
       [WARNING] System artifact: p2.eclipse-plugin:org.eclipse.mylyn.commons.notifications.ui:jar:1.17.2.v20200813-0821:system has no file attached
