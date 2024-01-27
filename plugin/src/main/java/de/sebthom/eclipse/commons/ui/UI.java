@@ -4,11 +4,10 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
-import java.util.function.Supplier;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -33,6 +32,7 @@ import org.eclipse.ui.progress.IProgressConstants;
 
 import de.sebthom.eclipse.commons.internal.EclipseCommonsPlugin;
 import de.sebthom.eclipse.commons.resources.Projects;
+import net.sf.jstuff.core.functional.ThrowingSupplier;
 
 /**
  * @author Sebastian Thomschke
@@ -66,7 +66,7 @@ public abstract class UI {
             if (editorInput instanceof final FileEditorInput fileEditorInput)
                return fileEditorInput.getFile().getProject();
          }
-      } catch (final CoreException ex) {
+      } catch (final Exception ex) {
          EclipseCommonsPlugin.log().error(ex);
       }
       return null;
@@ -202,7 +202,7 @@ public abstract class UI {
          final var handlerService = site.getService(IHandlerService.class);
          handlerService.executeCommand(IWorkbenchCommandConstants.WINDOW_MAXIMIZE_ACTIVE_VIEW_OR_EDITOR, null);
       } catch (final Exception ex) {
-         ex.printStackTrace();
+         EclipseCommonsPlugin.log().error(ex);
       }
    }
 
@@ -211,7 +211,7 @@ public abstract class UI {
          final var handlerService = window.getWorkbench().getService(IHandlerService.class);
          handlerService.executeCommand(IWorkbenchCommandConstants.WINDOW_MAXIMIZE_ACTIVE_VIEW_OR_EDITOR, null);
       } catch (final Exception ex) {
-         ex.printStackTrace();
+         EclipseCommonsPlugin.log().error(ex);
       }
    }
 
@@ -226,13 +226,15 @@ public abstract class UI {
          if (page != null)
             return (T) page.showView(viewId);
       } catch (final Exception ex) {
-         ex.printStackTrace();
+         EclipseCommonsPlugin.log().error(ex);
       }
       return null;
    }
 
    /**
     * Runs the given runnable synchronously on the UI thread
+    *
+    * @throws SWTException if the {@link Display} has been disposed
     */
    public static void run(final Runnable runnable) {
       if (isUIThread()) {
@@ -245,20 +247,38 @@ public abstract class UI {
    /**
     * Runs the given runnable synchronously on the UI thread
     *
-    * @throws SWTException if executing the runnable fails
+    * @throws EXCEPTION if executing the runnable failed
+    * @throws SWTException if the {@link Display} has been disposed
     */
    @SuppressWarnings("unchecked")
-   public static <T> T run(final Supplier<T> runnable) {
+   public static <RETURN_VALUE, EXCEPTION extends Exception> RETURN_VALUE run(final ThrowingSupplier<RETURN_VALUE, EXCEPTION> runnable)
+      throws EXCEPTION {
       if (isUIThread())
          return runnable.get();
 
-      final var result = new Object[1];
-      getDisplay().syncExec(() -> result[0] = runnable.get());
-      return (T) result[0];
+      final var resultRef = new AtomicReference<RETURN_VALUE>();
+      final var exRef = new AtomicReference<@Nullable Exception>();
+      getDisplay().syncExec(() -> {
+         try {
+            resultRef.set(runnable.getOrThrow());
+         } catch (final Exception ex) {
+            exRef.set(ex);
+         }
+      });
+
+      final @Nullable Exception ex = exRef.get();
+      if (ex != null) {
+         if (ex instanceof final RuntimeException rex)
+            throw rex;
+         throw (EXCEPTION) ex;
+      }
+      return resultRef.get();
    }
 
    /**
     * Runs the given runnable asynchronously on the UI thread
+    *
+    * @throws SWTException if the {@link Display} has been disposed
     */
    public static void runAsync(final Runnable runnable) {
       getDisplay().asyncExec(runnable);
@@ -266,6 +286,8 @@ public abstract class UI {
 
    /**
     * Runs the given runnable on the UI thread after the specified number of milliseconds have elapsed.
+    *
+    * @throws SWTException if the {@link Display} has been disposed
     */
    public static void runDelayed(final int delayMS, final Runnable runnable) {
       getDisplay().timerExec(delayMS, runnable);
