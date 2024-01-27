@@ -39,7 +39,7 @@ public abstract class Projects {
       return null;
    }
 
-   public static final void addBuilder(final IProject project, final String builderId, @Nullable final IProgressMonitor monitor)
+   public static final void addBuilder(final IProject project, final String builderId, final @Nullable IProgressMonitor monitor)
       throws CoreException {
       if (hasBuilder(project, builderId))
          return;
@@ -51,7 +51,7 @@ public abstract class Projects {
       project.setDescription(projectCfg, monitor);
    }
 
-   public static void addNature(final IProject project, final String natureId, @Nullable final IProgressMonitor monitor)
+   public static void addNature(final IProject project, final String natureId, final @Nullable IProgressMonitor monitor)
       throws CoreException {
       Args.notEmpty("natureId", natureId);
 
@@ -141,7 +141,7 @@ public abstract class Projects {
       return getProjects().filter(filter);
    }
 
-   public static final boolean hasBuilder(@Nullable final IProject project, final String builderId) throws CoreException {
+   public static final boolean hasBuilder(final @Nullable IProject project, final String builderId) throws CoreException {
       if (project == null)
          return false;
 
@@ -152,7 +152,7 @@ public abstract class Projects {
       return false;
    }
 
-   public static boolean hasNature(@Nullable final IProject project, final @Nullable String natureId) {
+   public static boolean hasNature(final @Nullable IProject project, final @Nullable String natureId) {
       if (project == null //
          || Strings.isBlank(natureId) //
          || !project.exists() //
@@ -168,7 +168,7 @@ public abstract class Projects {
       }
    }
 
-   public static void removeBuilder(final IProject project, final String builderId, @Nullable final IProgressMonitor monitor)
+   public static void removeBuilder(final IProject project, final String builderId, final @Nullable IProgressMonitor monitor)
       throws CoreException {
       if (hasBuilder(project, builderId))
          return;
@@ -178,7 +178,7 @@ public abstract class Projects {
       project.setDescription(projectCfg, monitor);
    }
 
-   public static void removeNature(final IProject project, final String natureId, @Nullable final IProgressMonitor monitor)
+   public static void removeNature(final IProject project, final String natureId, final @Nullable IProgressMonitor monitor)
       throws CoreException {
       Args.notEmpty("natureId", natureId);
 

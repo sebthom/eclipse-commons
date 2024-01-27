@@ -52,16 +52,14 @@ public abstract class UI {
       shell.setLocation(new Point(x, y));
    }
 
-   @Nullable
-   public static IProject getActiveProject() {
+   public static @Nullable IProject getActiveProject() {
       final var window = getActiveWorkbenchWindow();
       if (window == null)
          return null;
       return getActiveProject(window);
    }
 
-   @Nullable
-   public static IProject getActiveProject(final IWorkbenchPartReference partRef) {
+   public static @Nullable IProject getActiveProject(final IWorkbenchPartReference partRef) {
       try {
          if (partRef instanceof final IEditorReference editorRef) {
             final var editorInput = editorRef.getEditorInput();
@@ -74,8 +72,7 @@ public abstract class UI {
       return null;
    }
 
-   @Nullable
-   public static IProject getActiveProject(final IWorkbenchWindow window) {
+   public static @Nullable IProject getActiveProject(final IWorkbenchWindow window) {
       try {
          final var sel = window.getSelectionService().getSelection();
          if (sel instanceof final IStructuredSelection structSel) {
@@ -99,8 +96,7 @@ public abstract class UI {
       return null;
    }
 
-   @Nullable
-   public static IProject getActiveProjectWithNature(final IWorkbenchPartReference partRef, @Nullable final String natureId) {
+   public static @Nullable IProject getActiveProjectWithNature(final IWorkbenchPartReference partRef, final @Nullable String natureId) {
       final var project = getActiveProject(partRef);
       if (project == null)
          return null;
@@ -108,8 +104,7 @@ public abstract class UI {
       return Projects.hasNature(project, natureId) ? project : null;
    }
 
-   @Nullable
-   public static IProject getActiveProjectWithNature(final IWorkbenchWindow window, @Nullable final String natureId) {
+   public static @Nullable IProject getActiveProjectWithNature(final IWorkbenchWindow window, final @Nullable String natureId) {
       final var project = getActiveProject(window);
       if (project == null)
          return null;
@@ -117,14 +112,12 @@ public abstract class UI {
       return Projects.hasNature(project, natureId) ? project : null;
    }
 
-   @Nullable
-   public static IWorkbenchPage getActiveWorkbenchPage() {
+   public static @Nullable IWorkbenchPage getActiveWorkbenchPage() {
       final var window = getActiveWorkbenchWindow();
       return window == null ? null : window.getActivePage();
    }
 
-   @Nullable
-   public static IWorkbenchWindow getActiveWorkbenchWindow() {
+   public static @Nullable IWorkbenchWindow getActiveWorkbenchWindow() {
       if (!isWorkbenchRunning())
          return null;
 
@@ -166,8 +159,7 @@ public abstract class UI {
       return shell;
    }
 
-   @Nullable
-   public static IStatusLineManager getStatusLine(final IWorkbenchWindow window) {
+   public static @Nullable IStatusLineManager getStatusLine(final IWorkbenchWindow window) {
       final var page = window.getActivePage();
 
       final var editorSite = page.getActiveEditor().getEditorSite();
@@ -223,14 +215,12 @@ public abstract class UI {
       }
    }
 
-   @Nullable
-   public static IViewPart openProgressView() {
+   public static @Nullable IViewPart openProgressView() {
       return openView(IProgressConstants.PROGRESS_VIEW_ID);
    }
 
-   @Nullable
    @SuppressWarnings("unchecked")
-   public static <T extends IViewPart> T openView(final String viewId) {
+   public static @Nullable <T extends IViewPart> T openView(final String viewId) {
       try {
          final var page = getActiveWorkbenchPage();
          if (page != null)

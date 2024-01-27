@@ -49,15 +49,15 @@ public abstract class Dialogs {
       };
    }
 
-   public static void showError(@Nullable final String title, @Nullable final String msg, final Object... msgArgs) {
+   public static void showError(final @Nullable String title, final @Nullable String msg, final Object... msgArgs) {
       UI.run(() -> MessageDialog.openError(UI.getShell(), title, ArrayUtils.isEmpty(msgArgs) ? msg : NLS.bind(msg, msgArgs)));
    }
 
-   public static void showWarning(@Nullable final String title, @Nullable final String msg, final Object... msgArgs) {
+   public static void showWarning(final @Nullable String title, final @Nullable String msg, final Object... msgArgs) {
       UI.run(() -> MessageDialog.openWarning(UI.getShell(), title, ArrayUtils.isEmpty(msgArgs) ? msg : NLS.bind(msg, msgArgs)));
    }
 
-   public static void showStatus(@Nullable final String title, final IStatus status, final boolean log) {
+   public static void showStatus(final @Nullable String title, final IStatus status, final boolean log) {
       UI.run(() -> {
          final var statusAdapter = new StatusAdapter(status);
          statusAdapter.setProperty(IStatusAdapterConstants.TITLE_PROPERTY, title);

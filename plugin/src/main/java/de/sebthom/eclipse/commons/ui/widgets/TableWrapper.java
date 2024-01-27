@@ -47,19 +47,19 @@ public class TableWrapper<E> {
    private CopyOnWriteArrayList<TriConsumer<TableWrapper<E>, Collection<E>, Collection<E>>> itemsChangedListener = new CopyOnWriteArrayList<>();
 
    public TableWrapper(final TableViewer viewer) {
-      this.table = viewer.getTable();
+      table = viewer.getTable();
       this.viewer = viewer;
    }
 
    public TableWrapper(final Table table) {
       this.table = table;
-      this.viewer = new TableViewer(table);
+      viewer = new TableViewer(table);
    }
 
    public TableWrapper(final Composite parent, final int style, final @Nullable Object layoutData) {
       table = new Table(parent, style);
       table.setLayoutData(layoutData);
-      this.viewer = new TableViewer(table);
+      viewer = new TableViewer(table);
    }
 
    public TableWrapper<E> bind(final MutableObservableRef<List<E>> model) {
@@ -171,7 +171,7 @@ public class TableWrapper<E> {
       return setItems(Arrays.asList(items), comparator);
    }
 
-   public TableWrapper<E> setLabelComparator(@Nullable final Comparator<? super String> comparator) {
+   public TableWrapper<E> setLabelComparator(final @Nullable Comparator<? super String> comparator) {
       if (comparator == null) {
          viewer.setComparator(null);
       } else {
@@ -183,16 +183,15 @@ public class TableWrapper<E> {
    public TableWrapper<E> setLabelProvider(final Function<E, String> provider) {
       viewer.setLabelProvider(new LabelProvider() {
          @SuppressWarnings("unchecked")
-         @Nullable
          @Override
-         public String getText(@Nullable final Object item) {
+         public @Nullable String getText(final @Nullable Object item) {
             return provider.apply((E) item);
          }
       });
       return this;
    }
 
-   public TableWrapper<E> setSelection(@Nullable final List<E> items) {
+   public TableWrapper<E> setSelection(final @Nullable List<E> items) {
       final var currentSelection = getSelection();
       if (Objects.equals(items, currentSelection))
          return this;

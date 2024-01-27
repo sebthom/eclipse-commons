@@ -22,14 +22,14 @@ public class NotificationPopup extends AbstractNotificationPopup {
    private final String title;
    private final @Nullable String message;
 
-   public NotificationPopup(final Shell parent, @Nullable final String message) {
+   public NotificationPopup(final Shell parent, final @Nullable String message) {
       super(parent.getDisplay());
       setParentShell(parent);
       title = "";
       this.message = message;
    }
 
-   public NotificationPopup(final Shell parent, final String title, @Nullable final String message) {
+   public NotificationPopup(final Shell parent, final String title, final @Nullable String message) {
       super(parent.getDisplay());
       setParentShell(parent);
       this.title = title;

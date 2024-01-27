@@ -22,14 +22,10 @@ import de.sebthom.eclipse.commons.ui.Editors;
 public class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTargetExtension, IFindReplaceTargetExtension2,
    IFindReplaceTargetExtension3 {
 
-   @Nullable
-   private static FindReplaceTarget lastFindReplaceTarget;
+   private static @Nullable FindReplaceTarget lastFindReplaceTarget;
+   private static @Nullable IWorkbenchPart lastEditor;
 
-   @Nullable
-   private static IWorkbenchPart lastEditor;
-
-   @Nullable
-   public static synchronized FindReplaceTarget get() {
+   public static synchronized @Nullable FindReplaceTarget get() {
       final IWorkbenchPart editor = Editors.getActiveTextEditor();
       if (editor == null)
          return null;
@@ -84,15 +80,13 @@ public class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTarget
       return targetExt3.findAndSelect(offset, findString, searchForward, caseSensitive, wholeWord, regExSearch);
    }
 
-   @Nullable
    @Override
-   public Point getLineSelection() {
+   public @Nullable Point getLineSelection() {
       return targetExt.getLineSelection();
    }
 
-   @Nullable
    @Override
-   public IRegion getScope() {
+   public @Nullable IRegion getScope() {
       return targetExt.getScope();
    }
 
@@ -127,12 +121,12 @@ public class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTarget
    }
 
    @Override
-   public void setScope(@Nullable final IRegion scope) {
+   public void setScope(final @Nullable IRegion scope) {
       targetExt.setScope(scope);
    }
 
    @Override
-   public void setScopeHighlightColor(@Nullable final Color color) {
+   public void setScopeHighlightColor(final @Nullable Color color) {
       targetExt.setScopeHighlightColor(color);
    }
 

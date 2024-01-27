@@ -23,26 +23,22 @@ import de.sebthom.eclipse.commons.internal.EclipseCommonsPlugin;
  */
 public abstract class Editors {
 
-   @Nullable
-   public static IDocument getActiveDocument() {
+   public static @Nullable IDocument getActiveDocument() {
       return getDocument(getActiveTextEditor());
    }
 
-   @Nullable
-   public static IEditorPart getActiveEditor() {
+   public static @Nullable IEditorPart getActiveEditor() {
       final var activePage = UI.getActiveWorkbenchPage();
       if (activePage == null)
          return null;
       return activePage.getActiveEditor();
    }
 
-   @Nullable
-   public static IFile getActiveFile() {
+   public static @Nullable IFile getActiveFile() {
       return getFile(getActiveEditor());
    }
 
-   @Nullable
-   public static ITextEditor getActiveTextEditor() {
+   public static @Nullable ITextEditor getActiveTextEditor() {
       final var editor = getActiveEditor();
       if (editor == null)
          return null;
@@ -59,8 +55,7 @@ public abstract class Editors {
       return Adapters.adapt(editor, ITextEditor.class);
    }
 
-   @Nullable
-   public static String getActiveTextSelection() {
+   public static @Nullable String getActiveTextSelection() {
       final var editor = getActiveTextEditor();
       if (editor == null)
          return null;
@@ -69,8 +64,7 @@ public abstract class Editors {
       return null;
    }
 
-   @Nullable
-   public static IAnnotationModel getAnnotationModel(@Nullable final ITextEditor editor) {
+   public static @Nullable IAnnotationModel getAnnotationModel(final @Nullable ITextEditor editor) {
       if (editor == null)
          return null;
       final var docProvider = editor.getDocumentProvider();
@@ -79,8 +73,7 @@ public abstract class Editors {
       return docProvider.getAnnotationModel(editor.getEditorInput());
    }
 
-   @Nullable
-   public static IDocument getDocument(@Nullable final ITextEditor editor) {
+   public static @Nullable IDocument getDocument(final @Nullable ITextEditor editor) {
       if (editor == null)
          return null;
       final var docProvider = editor.getDocumentProvider();
@@ -89,8 +82,7 @@ public abstract class Editors {
       return docProvider.getDocument(editor.getEditorInput());
    }
 
-   @Nullable
-   public static IFile getFile(@Nullable final IEditorPart editor) {
+   public static @Nullable IFile getFile(final @Nullable IEditorPart editor) {
       if (editor == null)
          return null;
       final var input = editor.getEditorInput();

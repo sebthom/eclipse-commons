@@ -26,11 +26,8 @@ import org.eclipse.jface.text.source.IAnnotationModelExtension;
 public class Markers {
 
    private final String markerId;
-
    private Annotation[] activeMarkers = new Annotation[0];
-
-   @Nullable
-   private IAnnotationModel activeMarkersAnnoModel;
+   private @Nullable IAnnotationModel activeMarkersAnnoModel;
 
    public Markers(final String markerId) {
       this.markerId = markerId;
@@ -78,11 +75,11 @@ public class Markers {
       }
    }
 
-   public void setMarkers(final IAnnotationModel annoModel, @Nullable final List<Position> matches) {
+   public void setMarkers(final IAnnotationModel annoModel, final @Nullable List<Position> matches) {
       setMarkers(annoModel, matches, new NullProgressMonitor());
    }
 
-   public void setMarkers(final IAnnotationModel annoModel, @Nullable final List<Position> matches, final IProgressMonitor monitor) {
+   public void setMarkers(final IAnnotationModel annoModel, final @Nullable List<Position> matches, final IProgressMonitor monitor) {
       if (activeMarkersAnnoModel != null) {
          removeMarkers();
       }
@@ -93,7 +90,7 @@ public class Markers {
 
       final var job = new Job("Setting markers") {
          @Override
-         public IStatus run(@Nullable final IProgressMonitor monitor) {
+         public IStatus run(final @Nullable IProgressMonitor monitor) {
             final Map<Annotation, Position> newMarkers = new HashMap<>(matches.size());
             for (final var matchPos : matches) {
                newMarkers.put(new Annotation(markerId, false, null), matchPos);

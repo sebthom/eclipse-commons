@@ -76,7 +76,7 @@ public class ComboWrapper<E> {
          @SuppressWarnings("unchecked")
          final var items = (Collection<E>) input;
 
-         final var comparator = this.itemComparator;
+         final var comparator = itemComparator;
          if (comparator == null)
             return items.toArray();
 
@@ -267,7 +267,7 @@ public class ComboWrapper<E> {
       return setItems(Arrays.asList(items));
    }
 
-   public ComboWrapper<E> setLabelComparator(@Nullable final Comparator<? super String> comparator) {
+   public ComboWrapper<E> setLabelComparator(final @Nullable Comparator<? super String> comparator) {
       if (comparator == null) {
          viewer.setComparator(null);
       } else {
@@ -279,9 +279,8 @@ public class ComboWrapper<E> {
    public ComboWrapper<E> setLabelProvider(final Function<@NonNull E, String> provider) {
       viewer.setLabelProvider(new LabelProvider() {
          @SuppressWarnings("unchecked")
-         @Nullable
          @Override
-         public String getText(@Nullable final Object item) {
+         public @Nullable String getText(final @Nullable Object item) {
             if (item == null)
                return "";
             return provider.apply((E) item);
@@ -290,11 +289,11 @@ public class ComboWrapper<E> {
       return this;
    }
 
-   public synchronized ComboWrapper<E> setSelection(@Nullable final E item) {
+   public synchronized ComboWrapper<E> setSelection(final @Nullable E item) {
       return setSelection(item, false);
    }
 
-   public synchronized ComboWrapper<E> setSelection(@Nullable final E item, final boolean reveal) {
+   public synchronized ComboWrapper<E> setSelection(final @Nullable E item, final boolean reveal) {
       final var currentSelection = getSelection();
       if (currentSelection == item)
          return this;

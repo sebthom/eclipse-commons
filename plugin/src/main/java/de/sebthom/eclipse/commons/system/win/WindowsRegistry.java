@@ -4,7 +4,7 @@
  */
 package de.sebthom.eclipse.commons.system.win;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.util.Collections;
 import java.util.List;
@@ -122,8 +122,7 @@ public class WindowsRegistry {
     *
     * @return null if not present
     */
-   @Nullable
-   public String getStringValue(final String keyPath, @Nullable final String valueName) {
+   public @Nullable String getStringValue(final String keyPath, final @Nullable String valueName) {
       Args.notEmpty("keyPath", keyPath);
 
       assertSupported();
@@ -138,8 +137,7 @@ public class WindowsRegistry {
     *
     * @return null if not present
     */
-   @Nullable
-   public String getStringValue(final String keyParentPath, final String keyName, @Nullable final String valueName) {
+   public @Nullable String getStringValue(final String keyParentPath, final String keyName, final @Nullable String valueName) {
       Args.notEmpty("keyParentPath", keyParentPath);
       Args.notEmpty("keyName", keyName);
 
@@ -164,7 +162,7 @@ public class WindowsRegistry {
    /**
     * Set a registry REG_SZ value.
     */
-   public void setStringValue(final String keyPath, @Nullable final String valueName, final Object value) {
+   public void setStringValue(final String keyPath, final @Nullable String valueName, final Object value) {
       Args.notEmpty("keyPath", keyPath);
 
       assertSupported();
@@ -175,7 +173,7 @@ public class WindowsRegistry {
    /**
     * Set a registry REG_SZ value.
     */
-   public void setStringValue(final String keyParentPath, final String keyName, @Nullable final String valueName, final Object value) {
+   public void setStringValue(final String keyParentPath, final String keyName, final @Nullable String valueName, final Object value) {
       Args.notEmpty("keyParentPath", keyParentPath);
       Args.notEmpty("keyName", keyName);
 

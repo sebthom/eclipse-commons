@@ -4,7 +4,7 @@
  */
 package de.sebthom.eclipse.commons;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -49,8 +49,7 @@ public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
       return bundleResources;
    }
 
-   @Nullable
-   public ImageDescriptor getImageDescriptor(final String path) {
+   public @Nullable ImageDescriptor getImageDescriptor(final String path) {
       return imageDescriptorFromPlugin(pluginId, path);
    }
 
@@ -75,8 +74,7 @@ public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
       return preferenceStore;
    }
 
-   @Nullable
-   public Image getSharedImage(final String path) {
+   public @Nullable Image getSharedImage(final String path) {
       Args.notNull("path", path);
 
       var image = getImageRegistry().get(path);
@@ -88,8 +86,7 @@ public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
       return image;
    }
 
-   @Nullable
-   public ImageDescriptor getSharedImageDescriptor(final String path) {
+   public @Nullable ImageDescriptor getSharedImageDescriptor(final String path) {
       Args.notNull("path", path);
 
       return imageDescriptorFromPlugin(pluginId, path);

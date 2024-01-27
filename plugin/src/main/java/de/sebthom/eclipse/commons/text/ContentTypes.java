@@ -4,8 +4,8 @@
  */
 package de.sebthom.eclipse.commons.text;
 
-import static org.eclipse.core.filebuffers.FileBuffers.*;
-import static org.eclipse.core.runtime.Platform.*;
+import static org.eclipse.core.filebuffers.FileBuffers.getTextFileBufferManager;
+import static org.eclipse.core.runtime.Platform.getContentTypeManager;
 
 import org.eclipse.core.filebuffers.ITextFileBuffer;
 import org.eclipse.core.runtime.content.IContentType;
@@ -20,12 +20,11 @@ public abstract class ContentTypes {
 
    private static final IContentType[] EMPTY = {};
 
-   @Nullable
-   public static IContentType findById(final String contentTypeId) {
+   public static @Nullable IContentType findById(final String contentTypeId) {
       return getContentTypeManager().getContentType(contentTypeId);
    }
 
-   public static IContentType[] getAll(@Nullable final IDocument doc) {
+   public static IContentType[] getAll(final @Nullable IDocument doc) {
       if (doc == null)
          return EMPTY;
 
@@ -36,7 +35,7 @@ public abstract class ContentTypes {
       return getContentTypeManager().findContentTypesFor(input.getName());
    }
 
-   public static IContentType[] getAll(@Nullable final ITextFileBuffer buff) {
+   public static IContentType[] getAll(final @Nullable ITextFileBuffer buff) {
       if (buff == null)
          return EMPTY;
 

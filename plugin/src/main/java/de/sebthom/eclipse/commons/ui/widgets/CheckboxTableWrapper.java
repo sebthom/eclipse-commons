@@ -73,7 +73,7 @@ public class CheckboxTableWrapper<E> extends TableWrapper<E> {
       return this;
    }
 
-   public CheckboxTableWrapper<E> setCheckedItems(@Nullable final List<E> items) {
+   public CheckboxTableWrapper<E> setCheckedItems(final @Nullable List<E> items) {
       final var currentSelection = getCheckedItems();
       if (Objects.equals(items, currentSelection))
          return this;
@@ -108,7 +108,7 @@ public class CheckboxTableWrapper<E> extends TableWrapper<E> {
    }
 
    @Override
-   public CheckboxTableWrapper<E> setLabelComparator(@Nullable final Comparator<? super String> comparator) {
+   public CheckboxTableWrapper<E> setLabelComparator(final @Nullable Comparator<? super String> comparator) {
       return (CheckboxTableWrapper<E>) super.setLabelComparator(comparator);
    }
 
@@ -118,7 +118,7 @@ public class CheckboxTableWrapper<E> extends TableWrapper<E> {
    }
 
    @Override
-   public CheckboxTableWrapper<E> setSelection(@Nullable final List<E> items) {
+   public CheckboxTableWrapper<E> setSelection(final @Nullable List<E> items) {
       return (CheckboxTableWrapper<E>) super.setSelection(items);
    }
 }

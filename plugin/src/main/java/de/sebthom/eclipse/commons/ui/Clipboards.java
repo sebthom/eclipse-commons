@@ -16,11 +16,9 @@ public abstract class Clipboards {
 
    private static final Transfer[] TEXT_TRANSFER = new Transfer[] {TextTransfer.getInstance()};
 
-   @Nullable
-   private static Clipboard clipboard;
+   private static @Nullable Clipboard clipboard;
 
-   @Nullable
-   public static synchronized Clipboard getClipboard() {
+   public static synchronized @Nullable Clipboard getClipboard() {
       if (clipboard == null) {
          clipboard = new Clipboard(UI.getDisplay());
       }

@@ -47,7 +47,7 @@ public class PluginLogger {
       uiLog.addLogListener(listener);
    }
 
-   public void debug(@Nullable final String msg, final Object... msgArgs) {
+   public void debug(final @Nullable String msg, final Object... msgArgs) {
       fileLog.info(NLS.bind(msg, msgArgs));
    }
 
@@ -55,17 +55,17 @@ public class PluginLogger {
       fileLog.info(ex);
    }
 
-   public void debug(final Throwable ex, @Nullable final String msg, final Object... msgArgs) {
+   public void debug(final Throwable ex, final @Nullable String msg, final Object... msgArgs) {
       fileLog.info(ex, NLS.bind(msg, msgArgs));
    }
 
-   public IStatus error(@Nullable final Object msg) {
+   public IStatus error(final @Nullable Object msg) {
       final var status = statusFactory.createError(msg == null ? null : msg.toString());
       uiLog.log(status);
       return status;
    }
 
-   public IStatus error(@Nullable final String msg, final Object... msgArgs) {
+   public IStatus error(final @Nullable String msg, final Object... msgArgs) {
       final var status = statusFactory.createError(msg, msgArgs);
       uiLog.log(status);
       return status;
@@ -77,7 +77,7 @@ public class PluginLogger {
       return status;
    }
 
-   public IStatus error(final @Nullable Throwable ex, @Nullable final String msg, final Object... msgArgs) {
+   public IStatus error(final @Nullable Throwable ex, final @Nullable String msg, final Object... msgArgs) {
       final var status = statusFactory.createError(ex, msg, msgArgs);
       uiLog.log(status);
       return status;
@@ -87,19 +87,19 @@ public class PluginLogger {
       return uiLog.getBundle();
    }
 
-   public IStatus info(@Nullable final Object msg) {
+   public IStatus info(final @Nullable Object msg) {
       final var status = statusFactory.createInfo(msg == null ? null : msg.toString());
       uiLog.log(status);
       return status;
    }
 
-   public IStatus info(@Nullable final String msg, final Object... msgArgs) {
+   public IStatus info(final @Nullable String msg, final Object... msgArgs) {
       final var status = statusFactory.createInfo(msg, msgArgs);
       uiLog.log(status);
       return status;
    }
 
-   public IStatus info(final Throwable ex, @Nullable final String msg, final Object... msgArgs) {
+   public IStatus info(final Throwable ex, final @Nullable String msg, final Object... msgArgs) {
       final var status = statusFactory.createInfo(ex, msg, msgArgs);
       uiLog.log(status);
       return status;
@@ -113,13 +113,13 @@ public class PluginLogger {
       uiLog.removeLogListener(listener);
    }
 
-   public IStatus warn(@Nullable final Object msg) {
+   public IStatus warn(final @Nullable Object msg) {
       final var status = statusFactory.createWarning(msg == null ? null : msg.toString());
       uiLog.log(status);
       return status;
    }
 
-   public IStatus warn(@Nullable final String msg, final Object... msgArgs) {
+   public IStatus warn(final @Nullable String msg, final Object... msgArgs) {
       final var status = statusFactory.createWarning(msg, msgArgs);
       uiLog.log(status);
       return status;
@@ -131,7 +131,7 @@ public class PluginLogger {
       return status;
    }
 
-   public IStatus warn(final Throwable ex, @Nullable final String msg, final Object... msgArgs) {
+   public IStatus warn(final Throwable ex, final @Nullable String msg, final Object... msgArgs) {
       final var status = statusFactory.createWarning(ex, msg, msgArgs);
       uiLog.log(status);
       return status;

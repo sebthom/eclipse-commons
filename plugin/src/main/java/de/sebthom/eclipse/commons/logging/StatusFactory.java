@@ -35,7 +35,7 @@ public class StatusFactory {
       this(plugin.getBundle());
    }
 
-   public IStatus createError(@Nullable final String msg, final Object... msgArgs) {
+   public IStatus createError(final @Nullable String msg, final Object... msgArgs) {
       return createStatus(IStatus.ERROR, msg, msgArgs);
    }
 
@@ -43,11 +43,11 @@ public class StatusFactory {
       return createStatus(IStatus.ERROR, ex, ex.getMessage());
    }
 
-   public IStatus createError(final @Nullable Throwable ex, @Nullable final String msg, final Object... msgArgs) {
+   public IStatus createError(final @Nullable Throwable ex, final @Nullable String msg, final Object... msgArgs) {
       return createStatus(IStatus.ERROR, ex, msg, msgArgs);
    }
 
-   public IStatus createInfo(@Nullable final String msg, final Object... msgArgs) {
+   public IStatus createInfo(final @Nullable String msg, final Object... msgArgs) {
       return createStatus(IStatus.INFO, msg, msgArgs);
    }
 
@@ -55,17 +55,17 @@ public class StatusFactory {
       return createStatus(IStatus.INFO, ex, ex.getMessage());
    }
 
-   public IStatus createInfo(final Throwable ex, @Nullable final String msg, final Object... msgArgs) {
+   public IStatus createInfo(final Throwable ex, final @Nullable String msg, final Object... msgArgs) {
       return createStatus(IStatus.INFO, ex, msg, msgArgs);
    }
 
-   public IStatus createStatus(final int severity, @Nullable final String msg, final Object... msgArgs) {
+   public IStatus createStatus(final int severity, final @Nullable String msg, final Object... msgArgs) {
       if (msgArgs.length == 0)
          return new Status(severity, pluginId, msg);
       return new Status(severity, pluginId, interpolateMessage(msg, msgArgs));
    }
 
-   public IStatus createStatus(final int severity, @Nullable final Throwable ex, @Nullable final String msg, final Object... msgArgs) {
+   public IStatus createStatus(final int severity, final @Nullable Throwable ex, final @Nullable String msg, final Object... msgArgs) {
       final var statusMsg = Strings.isNotEmpty(msg) //
          ? interpolateMessage(msg, msgArgs) //
          : ex == null //
@@ -80,7 +80,7 @@ public class StatusFactory {
       return new Status(severity, pluginId, severity, statusMsg, ex);
    }
 
-   public IStatus createWarning(@Nullable final String msg, final Object... msgArgs) {
+   public IStatus createWarning(final @Nullable String msg, final Object... msgArgs) {
       return createStatus(IStatus.WARNING, msg, msgArgs);
    }
 
@@ -88,7 +88,7 @@ public class StatusFactory {
       return createStatus(IStatus.WARNING, ex, ex.getMessage());
    }
 
-   public IStatus createWarning(final Throwable ex, @Nullable final String msg, final Object... msgArgs) {
+   public IStatus createWarning(final Throwable ex, final @Nullable String msg, final Object... msgArgs) {
       return createStatus(IStatus.WARNING, ex, msg, msgArgs);
    }
 
