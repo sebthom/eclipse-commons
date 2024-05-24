@@ -200,6 +200,8 @@ public abstract class UI {
          return;
       try {
          final var handlerService = site.getService(IHandlerService.class);
+         if (handlerService == null)
+            return;
          handlerService.executeCommand(IWorkbenchCommandConstants.WINDOW_MAXIMIZE_ACTIVE_VIEW_OR_EDITOR, null);
       } catch (final Exception ex) {
          EclipseCommonsPlugin.log().error(ex);
@@ -209,6 +211,8 @@ public abstract class UI {
    public static void maximize(final IWorkbenchWindow window) {
       try {
          final var handlerService = window.getWorkbench().getService(IHandlerService.class);
+         if (handlerService == null)
+            return;
          handlerService.executeCommand(IWorkbenchCommandConstants.WINDOW_MAXIMIZE_ACTIVE_VIEW_OR_EDITOR, null);
       } catch (final Exception ex) {
          EclipseCommonsPlugin.log().error(ex);

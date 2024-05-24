@@ -104,7 +104,7 @@ public class Markers {
                   annoModel.addAnnotation(entry.getKey(), entry.getValue());
                }
             }
-            activeMarkers = newMarkers.keySet().toArray(new Annotation[newMarkers.size()]);
+            activeMarkers = newMarkers.keySet().toArray(Annotation[]::new);
             return Status.OK_STATUS;
          }
       };

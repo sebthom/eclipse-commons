@@ -154,7 +154,7 @@ public abstract class Projects {
 
    public static boolean hasNature(final @Nullable IProject project, final @Nullable String natureId) {
       if (project == null //
-         || Strings.isBlank(natureId) //
+         || natureId == null || natureId.isBlank() //
          || !project.exists() //
          || !project.isOpen() // natures of closed projects cannot be queried
       )

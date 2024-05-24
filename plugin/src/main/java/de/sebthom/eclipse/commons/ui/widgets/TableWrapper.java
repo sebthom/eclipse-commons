@@ -182,9 +182,9 @@ public class TableWrapper<E> {
 
    public TableWrapper<E> setLabelProvider(final Function<E, String> provider) {
       viewer.setLabelProvider(new LabelProvider() {
-         @SuppressWarnings("unchecked")
          @Override
-         public @Nullable String getText(final @Nullable Object item) {
+         @SuppressWarnings("unchecked")
+         public @Nullable String getText(final Object item) {
             return provider.apply((E) item);
          }
       });

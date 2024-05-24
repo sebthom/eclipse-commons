@@ -4,12 +4,14 @@
  */
 package de.sebthom.eclipse.commons;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashSet;
 
@@ -18,7 +20,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.URIUtil;
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.osgi.framework.Bundle;
 
 import net.sf.jstuff.core.validation.Args;
@@ -29,9 +30,7 @@ import net.sf.jstuff.core.validation.Args;
 public class BundleResources {
 
    private final Bundle bundle;
-
-   @NonNullByDefault({})
-   private String[] searchPaths;
+   private final String[] searchPaths;
 
    public BundleResources(final Bundle bundle) {
       this(bundle, "");
@@ -39,7 +38,7 @@ public class BundleResources {
 
    public BundleResources(final Bundle bundle, final String... searchPaths) {
       this.bundle = bundle;
-      initSearchPaths(searchPaths);
+      this.searchPaths = initSearchPaths(searchPaths);
    }
 
    public BundleResources(final Plugin plugin) {
@@ -47,8 +46,7 @@ public class BundleResources {
    }
 
    public BundleResources(final Plugin plugin, final String... searchPaths) {
-      bundle = plugin.getBundle();
-      initSearchPaths(searchPaths);
+      this(plugin.getBundle(), searchPaths);
    }
 
    /**
@@ -57,10 +55,12 @@ public class BundleResources {
    public File extract(final String resourcePath) throws IOException {
       Args.notBlank("resourcePath", resourcePath);
 
-      final var url = FileLocator.toFileURL(getURL(resourcePath)); // extract the file
       try {
-         return URIUtil.toFile(URIUtil.toURI(url));
-      } catch (final URISyntaxException ex) {
+         final URL url = FileLocator.toFileURL(getURL(resourcePath)); // extracts the file
+         return URIUtil.toFile(URIUtil.toURI(asNonNull(url)));
+      } catch (final IOException ex) {
+         throw ex;
+      } catch (final Exception ex) {
          throw new IOException(ex);
       }
    }
@@ -69,8 +69,8 @@ public class BundleResources {
     * @throws IllegalArgumentException if given resourcePath cannot be found
     */
    public InputStream getAsStream(final String resourcePath) throws IOException {
-      final var url = getURL(resourcePath);
-      final var con = url.openConnection();
+      final URL url = getURL(resourcePath);
+      final URLConnection con = url.openConnection();
       return con.getInputStream(); // responsibility of caller to close stream when done
    }
 
@@ -78,7 +78,7 @@ public class BundleResources {
     * @throws IllegalArgumentException if given resourcePath cannot be found
     */
    public String getAsString(final String resourcePath) throws IOException {
-      try (var stream = getAsStream(resourcePath)) {
+      try (InputStream stream = getAsStream(resourcePath)) {
          final var writer = new StringWriter();
          IOUtils.copy(stream, writer, StandardCharsets.UTF_8);
          return writer.toString();
@@ -86,12 +86,12 @@ public class BundleResources {
    }
 
    /**
-    * @throws IllegalArgumentException if given resourcePath cannot be found
+    * @throws IllegalArgumentException if given resourcePath is blank or cannot be found
     */
    public URL getURL(final String resourcePath) {
       Args.notBlank("resourcePath", resourcePath);
 
-      for (final var searchPath : searchPaths) {
+      for (final String searchPath : searchPaths) {
          final var url = FileLocator.find(bundle, new Path(searchPath + resourcePath), null);
          if (url != null)
             return url;
@@ -100,22 +100,22 @@ public class BundleResources {
       throw new IllegalArgumentException("Resource not found: " + resourcePath);
    }
 
-   private void initSearchPaths(final String... searchPaths) {
+   private String[] initSearchPaths(final String... searchPaths) {
       final var paths = new LinkedHashSet<String>();
 
-      for (var p : searchPaths) {
-         if (p.length() == 0) {
+      for (String searchPath : searchPaths) {
+         if (searchPath.length() == 0) {
             paths.add("");
             continue;
          }
-         p = p.replace('\\', '/');
-         if (!p.endsWith("/")) {
-            p = p + '/';
+         searchPath = searchPath.replace('\\', '/');
+         if (!searchPath.endsWith("/")) {
+            searchPath = searchPath + '/';
          }
-         paths.add(p);
+         paths.add(searchPath);
       }
       paths.add(""); // add root path to end in case it is not in the list
 
-      this.searchPaths = paths.toArray(String[]::new);
+      return paths.toArray(String[]::new);
    }
 }

@@ -4,6 +4,8 @@
  */
 package de.sebthom.eclipse.commons.ui.widgets;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -68,7 +70,7 @@ public class ComboWrapper<E> {
    }
 
    private ComboViewer createComboViewer() {
-      final ComboViewer viewer = new ComboViewer(combo);
+      final var viewer = new ComboViewer(combo);
       viewer.setContentProvider((IStructuredContentProvider) input -> {
          if (input == null)
             return ArrayUtils.EMPTY_OBJECT_ARRAY;
@@ -78,12 +80,12 @@ public class ComboWrapper<E> {
 
          final var comparator = itemComparator;
          if (comparator == null)
-            return items.toArray();
+            return asNonNull(items.toArray());
 
          @SuppressWarnings("unchecked")
          final var sorted = new ArrayList<>((Collection<E>) input);
          sorted.sort(comparator);
-         return sorted.toArray();
+         return asNonNull(sorted.toArray());
       });
       return viewer;
    }
@@ -185,7 +187,7 @@ public class ComboWrapper<E> {
       model.subscribe(onModelChanged);
 
       setSelection(model.get());
-      onSelectionChanged(selection -> model.set(selection == null ? defaultValue : selection));
+      onSelectionChanged((@Nullable final E selection) -> model.set(selection == null ? defaultValue : selection));
 
       combo.addDisposeListener(ev -> model.unsubscribe(onModelChanged));
       return this;
@@ -231,7 +233,10 @@ public class ComboWrapper<E> {
 
    @SuppressWarnings("unchecked")
    public ComboWrapper<E> onSelectionChanged(final Consumer<E> listener) {
-      viewer.addSelectionChangedListener(event -> listener.accept((E) event.getStructuredSelection().getFirstElement()));
+      viewer.addSelectionChangedListener(event -> {
+         final var elem = (E) event.getStructuredSelection().getFirstElement();
+         listener.accept(elem);
+      });
       return this;
    }
 
@@ -263,16 +268,12 @@ public class ComboWrapper<E> {
    }
 
    @SafeVarargs
-   public final synchronized ComboWrapper<E> setItems(final @NonNull E... items) {
+   public final synchronized ComboWrapper<E> setItems(final E... items) {
       return setItems(Arrays.asList(items));
    }
 
    public ComboWrapper<E> setLabelComparator(final @Nullable Comparator<? super String> comparator) {
-      if (comparator == null) {
-         viewer.setComparator(null);
-      } else {
-         viewer.setComparator(new ViewerComparator(comparator));
-      }
+      viewer.setComparator(comparator == null ? null : new ViewerComparator(comparator));
       return this;
    }
 
