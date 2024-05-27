@@ -4,7 +4,7 @@
  */
 package de.sebthom.eclipse.commons.logging;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.ILogListener;
@@ -47,7 +47,7 @@ public class PluginLogger {
       uiLog.addLogListener(listener);
    }
 
-   public void debug(final @Nullable String msg, final Object... msgArgs) {
+   public void debug(final @Nullable String msg, final @Nullable Object... msgArgs) {
       fileLog.info(NLS.bind(msg, msgArgs));
    }
 
@@ -55,7 +55,7 @@ public class PluginLogger {
       fileLog.info(ex);
    }
 
-   public void debug(final Throwable ex, final @Nullable String msg, final Object... msgArgs) {
+   public void debug(final Throwable ex, final @Nullable String msg, final @Nullable Object... msgArgs) {
       fileLog.info(ex, NLS.bind(msg, msgArgs));
    }
 
@@ -65,7 +65,7 @@ public class PluginLogger {
       return status;
    }
 
-   public IStatus error(final @Nullable String msg, final Object... msgArgs) {
+   public IStatus error(final @Nullable String msg, final @Nullable Object... msgArgs) {
       final var status = statusFactory.createError(msg, msgArgs);
       uiLog.log(status);
       return status;
@@ -77,7 +77,7 @@ public class PluginLogger {
       return status;
    }
 
-   public IStatus error(final @Nullable Throwable ex, final @Nullable String msg, final Object... msgArgs) {
+   public IStatus error(final @Nullable Throwable ex, final @Nullable String msg, final @Nullable Object... msgArgs) {
       final var status = statusFactory.createError(ex, msg, msgArgs);
       uiLog.log(status);
       return status;
@@ -93,13 +93,13 @@ public class PluginLogger {
       return status;
    }
 
-   public IStatus info(final @Nullable String msg, final Object... msgArgs) {
+   public IStatus info(final @Nullable String msg, final @Nullable Object... msgArgs) {
       final var status = statusFactory.createInfo(msg, msgArgs);
       uiLog.log(status);
       return status;
    }
 
-   public IStatus info(final Throwable ex, final @Nullable String msg, final Object... msgArgs) {
+   public IStatus info(final Throwable ex, final @Nullable String msg, final @Nullable Object... msgArgs) {
       final var status = statusFactory.createInfo(ex, msg, msgArgs);
       uiLog.log(status);
       return status;
@@ -119,7 +119,7 @@ public class PluginLogger {
       return status;
    }
 
-   public IStatus warn(final @Nullable String msg, final Object... msgArgs) {
+   public IStatus warn(final @Nullable String msg, final @Nullable Object... msgArgs) {
       final var status = statusFactory.createWarning(msg, msgArgs);
       uiLog.log(status);
       return status;
@@ -131,7 +131,7 @@ public class PluginLogger {
       return status;
    }
 
-   public IStatus warn(final Throwable ex, final @Nullable String msg, final Object... msgArgs) {
+   public IStatus warn(final Throwable ex, final @Nullable String msg, final @Nullable Object... msgArgs) {
       final var status = statusFactory.createWarning(ex, msg, msgArgs);
       uiLog.log(status);
       return status;
