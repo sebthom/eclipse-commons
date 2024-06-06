@@ -4,6 +4,8 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
+
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.resources.IProject;
@@ -41,10 +43,11 @@ public abstract class UI {
 
    public static void center(final Shell shell) {
       final Rectangle parentBounds;
-      if (shell.getParent() == null) {
+      final var parent = shell.getParent();
+      if (parent == null) {
          parentBounds = shell.getDisplay().getBounds();
       } else {
-         parentBounds = shell.getParent().getBounds();
+         parentBounds = parent.getBounds();
       }
       final var shellBounds = shell.getBounds();
       final var x = (parentBounds.width - shellBounds.width) / 2 + parentBounds.x;
@@ -256,7 +259,7 @@ public abstract class UI {
     */
    @SuppressWarnings("unchecked")
    public static <RETURN_VALUE, EXCEPTION extends Exception> RETURN_VALUE run(final ThrowingSupplier<RETURN_VALUE, EXCEPTION> runnable)
-      throws EXCEPTION {
+         throws EXCEPTION {
       if (isUIThread())
          return runnable.get();
 
@@ -270,13 +273,13 @@ public abstract class UI {
          }
       });
 
-      final @Nullable Exception ex = exRef.get();
+      final Exception ex = exRef.get();
       if (ex != null) {
          if (ex instanceof final RuntimeException rex)
             throw rex;
          throw (EXCEPTION) ex;
       }
-      return resultRef.get();
+      return asNonNullUnsafe(resultRef.get());
    }
 
    /**

@@ -127,7 +127,7 @@ public class TableWrapper<E> {
    public TableWrapper<E> setItems(final Collection<E> items) {
       viewer.setContentProvider((IStructuredContentProvider) input -> {
          final var coll = (Collection<?>) input;
-         return coll.toArray(Object[]::new);
+         return coll == null ? ArrayUtils.EMPTY_OBJECT_ARRAY : coll.toArray(Object[]::new);
       });
       final var old = getItems();
       viewer.setInput(items);

@@ -71,7 +71,7 @@ public abstract class Consoles {
 
    public static boolean isAnsiColorsSupported() {
       return Platform.getBundle("org.eclipse.platform").getVersion().compareTo(ECLIPSE_PLATFORM_VERSION_WITH_ANSI_SUPPORT) >= 0 //
-         || Platform.getBundle("net.mihai-nita.ansicon.plugin") != null;
+            || Platform.getBundle("net.mihai-nita.ansicon.plugin") != null;
    }
 
    /**
