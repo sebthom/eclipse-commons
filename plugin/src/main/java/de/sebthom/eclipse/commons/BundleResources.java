@@ -4,8 +4,6 @@
  */
 package de.sebthom.eclipse.commons;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,7 +55,7 @@ public class BundleResources {
 
       try {
          final URL url = FileLocator.toFileURL(getURL(resourcePath)); // extracts the file
-         return URIUtil.toFile(URIUtil.toURI(asNonNull(url)));
+         return URIUtil.toFile(URIUtil.toURI(url));
       } catch (final IOException ex) {
          throw ex;
       } catch (final Exception ex) {

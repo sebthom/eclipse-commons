@@ -4,8 +4,6 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
-
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.resources.IProject;
@@ -279,7 +277,7 @@ public abstract class UI {
             throw rex;
          throw (EXCEPTION) ex;
       }
-      return asNonNullUnsafe(resultRef.get());
+      return resultRef.get();
    }
 
    /**

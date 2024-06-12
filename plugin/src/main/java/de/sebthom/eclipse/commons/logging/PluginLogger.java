@@ -4,8 +4,6 @@
  */
 package de.sebthom.eclipse.commons.logging;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
-
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
@@ -34,7 +32,7 @@ public class PluginLogger {
    }
 
    public PluginLogger(final Bundle bundle) {
-      fileLog = Logger.create(asNonNull(bundle.getSymbolicName()));
+      fileLog = Logger.create(bundle.getSymbolicName());
       uiLog = Platform.getLog(bundle);
       statusFactory = new StatusFactory(bundle);
    }

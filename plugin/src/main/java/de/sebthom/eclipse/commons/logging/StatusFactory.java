@@ -4,8 +4,6 @@
  */
 package de.sebthom.eclipse.commons.logging;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
@@ -28,7 +26,7 @@ public class StatusFactory {
    }
 
    public StatusFactory(final Bundle bundle) {
-      pluginId = asNonNull(bundle.getSymbolicName());
+      pluginId = bundle.getSymbolicName();
    }
 
    public StatusFactory(final Plugin plugin) {

@@ -4,8 +4,6 @@
  */
 package de.sebthom.eclipse.commons.ui.widgets;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -115,7 +113,7 @@ public class TableWrapper<E> {
    }
 
    public TableWrapper<E> onSelectionChanged(final Consumer<List<E>> listener) {
-      viewer.addSelectionChangedListener(event -> listener.accept(asNonNull(event.getStructuredSelection().toList())));
+      viewer.addSelectionChangedListener(event -> listener.accept(event.getStructuredSelection().toList()));
       return this;
    }
 
