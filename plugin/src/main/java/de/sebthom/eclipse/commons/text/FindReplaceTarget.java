@@ -8,11 +8,12 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.text.IFindReplaceTarget;
 import org.eclipse.jface.text.IFindReplaceTargetExtension;
 import org.eclipse.jface.text.IFindReplaceTargetExtension3;
+import org.eclipse.jface.text.IFindReplaceTargetExtension4;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.IFindReplaceTargetExtension2;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import de.sebthom.eclipse.commons.ui.Editors;
 
@@ -20,16 +21,20 @@ import de.sebthom.eclipse.commons.ui.Editors;
  * @author Sebastian Thomschke
  */
 public class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTargetExtension, IFindReplaceTargetExtension2,
-   IFindReplaceTargetExtension3 {
+      IFindReplaceTargetExtension3, IFindReplaceTargetExtension4 {
 
    private static @Nullable FindReplaceTarget lastFindReplaceTarget;
-   private static @Nullable IWorkbenchPart lastEditor;
+   private static @Nullable ITextEditor lastEditor;
 
    public static synchronized @Nullable FindReplaceTarget get() {
-      final IWorkbenchPart editor = Editors.getActiveTextEditor();
+      final ITextEditor editor = Editors.getActiveTextEditor();
       if (editor == null)
          return null;
 
+      return get(editor);
+   }
+
+   public static synchronized @Nullable FindReplaceTarget get(final ITextEditor editor) {
       if (editor == lastEditor)
          return lastFindReplaceTarget;
 
@@ -45,12 +50,14 @@ public class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTarget
    protected final IFindReplaceTargetExtension targetExt;
    protected final IFindReplaceTargetExtension2 targetExt2;
    protected final IFindReplaceTargetExtension3 targetExt3;
+   protected final IFindReplaceTargetExtension4 targetExt4;
 
    protected FindReplaceTarget(final IFindReplaceTarget target) {
       this.target = target;
       targetExt = (IFindReplaceTargetExtension) target;
       targetExt2 = (IFindReplaceTargetExtension2) target;
       targetExt3 = (IFindReplaceTargetExtension3) target;
+      targetExt4 = (IFindReplaceTargetExtension4) target;
    }
 
    @Override
@@ -70,18 +77,18 @@ public class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTarget
 
    @Override
    public int findAndSelect(final int widgetOffset, final String findString, final boolean searchForward, final boolean caseSensitive,
-      final boolean wholeWord) {
+         final boolean wholeWord) {
       return target.findAndSelect(widgetOffset, findString, searchForward, caseSensitive, wholeWord);
    }
 
    @Override
    public int findAndSelect(final int offset, final String findString, final boolean searchForward, final boolean caseSensitive,
-      final boolean wholeWord, final boolean regExSearch) {
+         final boolean wholeWord, final boolean regExSearch) {
       return targetExt3.findAndSelect(offset, findString, searchForward, caseSensitive, wholeWord, regExSearch);
    }
 
    @Override
-   public @Nullable Point getLineSelection() {
+   public Point getLineSelection() {
       return targetExt.getLineSelection();
    }
 
@@ -133,6 +140,11 @@ public class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTarget
    @Override
    public void setSelection(final int offset, final int length) {
       targetExt.setSelection(offset, length);
+   }
+
+   @Override
+   public void setSelection(final IRegion[] ranges) {
+      targetExt4.setSelection(ranges);
    }
 
    @Override
