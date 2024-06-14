@@ -1,6 +1,8 @@
 /*
- * Copyright 2021-2022 by Sebastian Thomschke and contributors
+ * SPDX-FileCopyrightText: © Sebastian Thomschke and contributors.
+ * SPDX-FileContributor: Sebastian Thomschke
  * SPDX-License-Identifier: EPL-2.0
+ * SPDX-ArtifactOfProjectHomePage: https://github.com/sebthom/eclipse-commons
  */
 package de.sebthom.eclipse.commons.text;
 
@@ -89,7 +91,7 @@ public abstract class ContentTypes {
    }
 
    private static List<IContentType> of(final @Nullable String fileName,
-      final ThrowingSupplier<@Nullable InputStream, Exception> inputStreamFactory) {
+         final ThrowingSupplier<@Nullable InputStream, Exception> inputStreamFactory) {
       try (var in = inputStreamFactory.get()) {
          if (in != null)
             return List.of(getContentTypeManager().findContentTypesFor(in, fileName));

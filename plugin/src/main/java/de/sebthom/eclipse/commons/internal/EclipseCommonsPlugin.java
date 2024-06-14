@@ -1,10 +1,12 @@
 /*
- * Copyright 2021-2022 by Sebastian Thomschke and contributors
+ * SPDX-FileCopyrightText: © Sebastian Thomschke and contributors.
+ * SPDX-FileContributor: Sebastian Thomschke
  * SPDX-License-Identifier: EPL-2.0
+ * SPDX-ArtifactOfProjectHomePage: https://github.com/sebthom/eclipse-commons
  */
 package de.sebthom.eclipse.commons.internal;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.osgi.framework.BundleContext;

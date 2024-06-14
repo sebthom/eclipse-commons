@@ -1,6 +1,8 @@
 /*
- * Copyright 2021-2022 by Sebastian Thomschke and contributors
+ * SPDX-FileCopyrightText: © Sebastian Thomschke and contributors.
+ * SPDX-FileContributor: Sebastian Thomschke
  * SPDX-License-Identifier: EPL-2.0
+ * SPDX-ArtifactOfProjectHomePage: https://github.com/sebthom/eclipse-commons
  */
 package de.sebthom.eclipse.commons.resources;
 
@@ -40,7 +42,7 @@ public abstract class Projects {
    }
 
    public static final void addBuilder(final IProject project, final String builderId, final @Nullable IProgressMonitor monitor)
-      throws CoreException {
+         throws CoreException {
       if (hasBuilder(project, builderId))
          return;
 
@@ -52,7 +54,7 @@ public abstract class Projects {
    }
 
    public static void addNature(final IProject project, final String natureId, final @Nullable IProgressMonitor monitor)
-      throws CoreException {
+         throws CoreException {
       Args.notEmpty("natureId", natureId);
 
       if (hasNature(project, natureId))
@@ -154,9 +156,9 @@ public abstract class Projects {
 
    public static boolean hasNature(final @Nullable IProject project, final @Nullable String natureId) {
       if (project == null //
-         || natureId == null || natureId.isBlank() //
-         || !project.exists() //
-         || !project.isOpen() // natures of closed projects cannot be queried
+            || natureId == null || natureId.isBlank() //
+            || !project.exists() //
+            || !project.isOpen() // natures of closed projects cannot be queried
       )
          return false;
 
@@ -169,7 +171,7 @@ public abstract class Projects {
    }
 
    public static void removeBuilder(final IProject project, final String builderId, final @Nullable IProgressMonitor monitor)
-      throws CoreException {
+         throws CoreException {
       if (hasBuilder(project, builderId))
          return;
 
@@ -179,7 +181,7 @@ public abstract class Projects {
    }
 
    public static void removeNature(final IProject project, final String natureId, final @Nullable IProgressMonitor monitor)
-      throws CoreException {
+         throws CoreException {
       Args.notEmpty("natureId", natureId);
 
       if (!hasNature(project, natureId))
