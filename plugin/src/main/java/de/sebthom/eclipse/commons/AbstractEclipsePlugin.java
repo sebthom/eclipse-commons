@@ -6,6 +6,9 @@
  */
 package de.sebthom.eclipse.commons;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
+
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -69,7 +72,43 @@ public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
    public IPersistentPreferenceStore getPreferenceStore() {
       var preferenceStore = this.preferenceStore;
       if (preferenceStore == null) {
-         preferenceStore = this.preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, pluginId);
+         preferenceStore = this.preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, pluginId) {
+            @Override
+            public boolean getBoolean(final String name) {
+               return Platform.getPreferencesService().getBoolean(pluginId, name, getDefaultBoolean(name),
+                  null /* = search in all available scopes */);
+            }
+
+            @Override
+            public double getDouble(final String name) {
+               return Platform.getPreferencesService().getDouble(pluginId, name, getDefaultDouble(name),
+                  null /* = search in all available scopes */);
+            }
+
+            @Override
+            public float getFloat(final String name) {
+               return Platform.getPreferencesService().getFloat(pluginId, name, getDefaultFloat(name),
+                  null /* = search in all available scopes */);
+            }
+
+            @Override
+            public int getInt(final String name) {
+               return Platform.getPreferencesService().getInt(pluginId, name, getDefaultInt(name),
+                  null /* = search in all available scopes */);
+            }
+
+            @Override
+            public long getLong(final String name) {
+               return Platform.getPreferencesService().getLong(pluginId, name, getDefaultLong(name),
+                  null /* = search in all available scopes */);
+            }
+
+            @Override
+            public String getString(final String name) {
+               return asNonNull(Platform.getPreferencesService().getString(pluginId, name, getDefaultString(name),
+                  null /* = search in all available scopes */));
+            }
+         };
       }
       return preferenceStore;
    }
@@ -92,6 +131,14 @@ public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
       return imageDescriptorFromPlugin(pluginId, path);
    }
 
+   public StatusFactory getStatusFactory() {
+      var statusFactory = this.statusFactory;
+      if (statusFactory == null) {
+         statusFactory = this.statusFactory = new StatusFactory(this);
+      }
+      return statusFactory;
+   }
+
    protected void registerImage(final ImageRegistry registry, final String path) {
       if (path.startsWith("platform:/plugin/")) {
          final var sourcePluginId = Strings.substringBetween(path, "platform:/plugin/", "/");
@@ -103,14 +150,6 @@ public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
       final var url = getBundleResources().getURL(path);
       final var desc = ImageDescriptor.createFromURL(url);
       registry.put(path, desc);
-   }
-
-   public StatusFactory getStatusFactory() {
-      var statusFactory = this.statusFactory;
-      if (statusFactory == null) {
-         statusFactory = this.statusFactory = new StatusFactory(this);
-      }
-      return statusFactory;
    }
 
    @Override
