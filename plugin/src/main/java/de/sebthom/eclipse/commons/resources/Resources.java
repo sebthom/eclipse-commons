@@ -8,9 +8,14 @@ package de.sebthom.eclipse.commons.resources;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -57,7 +62,25 @@ public abstract class Resources {
    }
 
    public static BufferedReader newBufferedReader(final IFile file) throws CoreException {
-      return new BufferedReader(new InputStreamReader(file.getContents(true)));
+      Charset cs = StandardCharsets.UTF_8;
+      try {
+         cs = Charset.forName(file.getCharset());
+      } catch (final Exception ex) {
+         // ignore
+      }
+      return new BufferedReader(new InputStreamReader(file.getContents(true), cs));
+   }
+
+   public static byte[] readBytes(final IFile file) throws IOException, CoreException {
+      try (InputStream is = file.getContents(true)) {
+         return IOUtils.toByteArray(is);
+      }
+   }
+
+   public static String readString(final IFile file) throws IOException, CoreException {
+      try (BufferedReader reader = newBufferedReader(file)) {
+         return IOUtils.toString(reader);
+      }
    }
 
    public static File toAbsoluteFile(final IResource file) {
