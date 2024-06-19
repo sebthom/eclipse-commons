@@ -38,10 +38,9 @@ public class GroupFieldEditor extends FieldEditor {
    public GroupFieldEditor(final String title, final Composite parent, final Function<Composite, List<FieldEditor>> fieldEditorsFactory) {
       fieldGroup = new Group(parent, SWT.DEFAULT);
       fieldGroup.setText(title);
-      fieldGroup.setLayout(GridLayoutFactory.swtDefaults().numColumns(NUM_COLUMNS).create());
       fieldGroupLayoutData = new GridData( //
          GridData.FILL, GridData.CENTER, //
-         false, false, //
+         true, false, //
          parent.getLayout() instanceof final GridLayout gl ? gl.numColumns : 1, 1);
       fieldGroup.setLayoutData(fieldGroupLayoutData);
       fieldGroup.addControlListener(new ControlAdapter() {
@@ -52,9 +51,13 @@ public class GroupFieldEditor extends FieldEditor {
       });
 
       editors = new ArrayList<>(fieldEditorsFactory.apply(fieldGroup));
-      editors.forEach(e -> e.fillIntoGrid(fieldGroup, NUM_COLUMNS));
+      editors.forEach(e -> {
+         e.fillIntoGrid(fieldGroup, NUM_COLUMNS);
+         e.setPropertyChangeListener(p -> fireValueChanged(p.getProperty(), p.getOldValue(), p.getNewValue()));
+      });
 
-      doFillIntoGrid(parent, parent.getLayout() instanceof final GridLayout gl ? gl.numColumns : 2);
+      // needs to be set after field editors were added
+      fieldGroup.setLayout(GridLayoutFactory.swtDefaults().numColumns(NUM_COLUMNS).create());
    }
 
    @Override
@@ -101,5 +104,10 @@ public class GroupFieldEditor extends FieldEditor {
    public void setPreferenceStore(final @Nullable IPreferenceStore store) {
       super.setPreferenceStore(store);
       editors.forEach(e -> e.setPreferenceStore(store));
+   }
+
+   @Override
+   public boolean isValid() {
+      return editors.stream().allMatch(FieldEditor::isValid);
    }
 }

@@ -9,7 +9,6 @@ package de.sebthom.eclipse.commons;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -22,6 +21,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.URIUtil;
 import org.osgi.framework.Bundle;
 
+import net.sf.jstuff.core.io.FastStringWriter;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -79,7 +79,7 @@ public class BundleResources {
     */
    public String getAsString(final String resourcePath) throws IOException {
       try (InputStream stream = getAsStream(resourcePath)) {
-         final var writer = new StringWriter();
+         final var writer = new FastStringWriter();
          IOUtils.copy(stream, writer, StandardCharsets.UTF_8);
          return writer.toString();
       }

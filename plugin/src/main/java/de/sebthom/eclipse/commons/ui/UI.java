@@ -164,6 +164,8 @@ public abstract class UI {
 
    public static @Nullable IStatusLineManager getStatusLine(final IWorkbenchWindow window) {
       final var page = window.getActivePage();
+      if (page == null)
+         return null;
 
       final var editorSite = page.getActiveEditor().getEditorSite();
       if (editorSite != null)
