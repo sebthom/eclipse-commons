@@ -55,6 +55,18 @@ public abstract class UI {
       shell.setLocation(new Point(x, y));
    }
 
+   @SuppressWarnings("unchecked")
+   public static @Nullable <T extends IViewPart> T findView(final String viewId) {
+      try {
+         final var page = getActiveWorkbenchPage();
+         if (page != null)
+            return (T) page.findView(viewId);
+      } catch (final Exception ex) {
+         EclipseCommonsPlugin.log().error(ex);
+      }
+      return null;
+   }
+
    public static @Nullable IProject getActiveProject() {
       final var window = getActiveWorkbenchWindow();
       if (window == null)
