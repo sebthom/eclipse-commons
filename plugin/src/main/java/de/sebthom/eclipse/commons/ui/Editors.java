@@ -6,6 +6,10 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
+import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jdt.annotation.Nullable;
@@ -14,12 +18,16 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IPathEditorInput;
+import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import de.sebthom.eclipse.commons.internal.EclipseCommonsPlugin;
+import de.sebthom.eclipse.commons.resources.Resources;
 
 /**
  * @author Sebastian Thomschke
@@ -85,15 +93,44 @@ public abstract class Editors {
       return docProvider.getDocument(editor.getEditorInput());
    }
 
-   public static @Nullable IFile getFile(final @Nullable IEditorPart editor) {
-      if (editor == null)
-         return null;
-      final var input = editor.getEditorInput();
+   public static @Nullable IFile getFile(final @Nullable IEditorInput input) {
       if (input == null)
          return null;
       if (input instanceof final IFileEditorInput fileInput)
          return fileInput.getFile();
       return input.getAdapter(IFile.class);
+   }
+
+   /**
+    * Use {@link #getFilePath(IEditorPart)} to get the file input more reliably.
+    *
+    * @return null if editor is not using {@link IFileEditorInput} and if file is outside of workspace
+    */
+   public static @Nullable IFile getFile(final @Nullable IEditorPart editor) {
+      if (editor == null)
+         return null;
+      return getFile(editor.getEditorInput());
+   }
+
+   public static @Nullable Path getFilePath(final @Nullable IEditorInput input) {
+      if (input == null)
+         return null;
+      if (input instanceof final IFileEditorInput fileInput)
+         return Resources.toAbsolutePath(fileInput.getFile());
+      if (input instanceof final IPathEditorInput uriInput)
+         return Resources.toAbsolutePath(uriInput.getPath());
+      if (input instanceof final IURIEditorInput uriInput) {
+         final URI uri = uriInput.getURI();
+         if ("file".equals(uri.getScheme()))
+            return Paths.get(uriInput.getURI());
+      }
+      return input.getAdapter(Path.class);
+   }
+
+   public static @Nullable Path getFilePath(final @Nullable IEditorPart editor) {
+      if (editor == null)
+         return null;
+      return getFilePath(editor.getEditorInput());
    }
 
    public static String getText(final @Nullable ITextEditor editor) {

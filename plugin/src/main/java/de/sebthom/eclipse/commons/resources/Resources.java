@@ -90,6 +90,10 @@ public abstract class Resources {
       return path.makeAbsolute().toFile();
    }
 
+   public static Path toAbsolutePath(final IPath path) {
+      return path.toFile().toPath().toAbsolutePath();
+   }
+
    public static Path toAbsolutePath(final IResource file) {
       return toAbsoluteFile(file).toPath();
    }
