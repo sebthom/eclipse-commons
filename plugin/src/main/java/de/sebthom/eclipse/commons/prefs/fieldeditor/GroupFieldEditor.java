@@ -11,9 +11,11 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -29,8 +31,6 @@ import de.sebthom.eclipse.commons.ui.UI;
  */
 public class GroupFieldEditor extends FieldEditor {
 
-   private static final int NUM_COLUMNS = 2;
-
    private final Group fieldGroup;
    private final GridData fieldGroupLayoutData;
    private final List<FieldEditor> editors;
@@ -41,7 +41,7 @@ public class GroupFieldEditor extends FieldEditor {
       fieldGroupLayoutData = new GridData( //
          GridData.FILL, GridData.CENTER, //
          true, false, //
-         parent.getLayout() instanceof final GridLayout gl ? gl.numColumns : 1, 1);
+         parent.getLayout() instanceof final GridLayout gl ? gl.numColumns : 2, 1);
       fieldGroup.setLayoutData(fieldGroupLayoutData);
       fieldGroup.addControlListener(new ControlAdapter() {
          @Override
@@ -51,13 +51,18 @@ public class GroupFieldEditor extends FieldEditor {
       });
 
       editors = new ArrayList<>(fieldEditorsFactory.apply(fieldGroup));
-      editors.forEach(e -> {
-         e.fillIntoGrid(fieldGroup, NUM_COLUMNS);
-         e.setPropertyChangeListener(p -> fireValueChanged(p.getProperty(), p.getOldValue(), p.getNewValue()));
-      });
+
+      final int numColumns = editors.stream().mapToInt(FieldEditor::getNumberOfControls).max().orElse(1);
+      editors.forEach(e -> e.fillIntoGrid(fieldGroup, numColumns));
 
       // needs to be set after field editors were added
-      fieldGroup.setLayout(GridLayoutFactory.swtDefaults().numColumns(NUM_COLUMNS).create());
+      fieldGroup.setLayout(GridLayoutFactory.swtDefaults().numColumns(numColumns).create());
+   }
+
+   @Override
+   public void setPropertyChangeListener(final @Nullable IPropertyChangeListener listener) {
+      super.setPropertyChangeListener(listener);
+      editors.forEach(e -> e.setPropertyChangeListener(listener));
    }
 
    @Override
@@ -88,6 +93,12 @@ public class GroupFieldEditor extends FieldEditor {
    @Override
    public int getNumberOfControls() {
       return 1;
+   }
+
+   @Override
+   public void setPage(final @Nullable DialogPage dialogPage) {
+      super.setPage(dialogPage);
+      editors.forEach(e -> e.setPage(dialogPage));
    }
 
    @Override
