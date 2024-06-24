@@ -189,7 +189,7 @@ public class ComboWrapper<E> {
       model.subscribe(onModelChanged);
 
       setSelection(model.get());
-      onSelectionChanged((@Nullable final E selection) -> model.set(selection == null ? defaultValue : selection));
+      onSelectionChanged((final @Nullable E selection) -> model.set(selection == null ? defaultValue : selection));
 
       combo.addDisposeListener(ev -> model.unsubscribe(onModelChanged));
       return this;

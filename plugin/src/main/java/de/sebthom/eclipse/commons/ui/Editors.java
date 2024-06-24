@@ -15,6 +15,7 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -90,7 +91,18 @@ public abstract class Editors {
       final var input = editor.getEditorInput();
       if (input == null)
          return null;
+      if (input instanceof final IFileEditorInput fileInput)
+         return fileInput.getFile();
       return input.getAdapter(IFile.class);
+   }
+
+   public static String getText(final @Nullable ITextEditor editor) {
+      if (editor == null)
+         return "";
+      final var doc = getDocument(editor);
+      if (doc == null)
+         return "";
+      return doc.get();
    }
 
    public static boolean replaceCurrentSelection(final String replacement, final boolean selectReplacement) {
