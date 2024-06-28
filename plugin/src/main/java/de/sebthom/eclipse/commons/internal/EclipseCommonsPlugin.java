@@ -6,8 +6,6 @@
  */
 package de.sebthom.eclipse.commons.internal;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
-
 import org.eclipse.jdt.annotation.Nullable;
 import org.osgi.framework.BundleContext;
 
@@ -26,8 +24,7 @@ public class EclipseCommonsPlugin extends AbstractEclipsePlugin {
     * @return the shared instance
     */
    public static EclipseCommonsPlugin get() {
-      Assert.notNull(instance, "Default plugin instance is still null.");
-      return asNonNull(instance);
+      return Assert.notNull(instance, "Default plugin instance is still null.");
    }
 
    public static PluginLogger log() {
