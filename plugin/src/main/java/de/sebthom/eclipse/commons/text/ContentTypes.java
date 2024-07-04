@@ -51,8 +51,10 @@ public abstract class ContentTypes {
    public static List<IContentType> of(final IEditorInput input) {
       if (input instanceof final IFileEditorInput fInput)
          return of(fInput.getName(), () -> fInput.getFile().getContents());
+
       if (input instanceof final IPathEditorInput pInput)
          return of(pInput.getPath().toFile().toPath());
+
       return List.of(getContentTypeManager().findContentTypesFor(input.getName()));
    }
 
@@ -70,11 +72,14 @@ public abstract class ContentTypes {
          final IContentType primaryContentType = buff.getContentType();
          if (primaryContentType != null) {
             switch (result.indexOf(primaryContentType)) {
+
                case -1:
                   result.add(0, primaryContentType);
                   break;
+
                case 0: // nothing to do, already at first position
                   break;
+
                default:
                   result.remove(primaryContentType);
                   result.add(0, primaryContentType);
@@ -98,8 +103,9 @@ public abstract class ContentTypes {
       } catch (final Exception ex) {
          // ignore
       }
-      if (fileName != null)
-         return List.of(getContentTypeManager().findContentTypesFor(fileName));
-      return Collections.emptyList();
+
+      return fileName == null //
+            ? Collections.emptyList()
+            : List.of(getContentTypeManager().findContentTypesFor(fileName));
    }
 }

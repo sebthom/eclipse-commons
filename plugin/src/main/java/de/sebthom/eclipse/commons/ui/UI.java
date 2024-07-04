@@ -10,6 +10,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -271,9 +273,10 @@ public abstract class UI {
     * @throws EXCEPTION if executing the runnable failed
     * @throws SWTException if the {@link Display} has been disposed
     */
+   @NonNullByDefault({})
    @SuppressWarnings("unchecked")
-   public static <RETURN_VALUE, EXCEPTION extends Exception> RETURN_VALUE run(final ThrowingSupplier<RETURN_VALUE, EXCEPTION> runnable)
-         throws EXCEPTION {
+   public static <RETURN_VALUE, EXCEPTION extends @NonNull Exception> RETURN_VALUE run(
+         final @NonNull ThrowingSupplier<RETURN_VALUE, EXCEPTION> runnable) throws EXCEPTION {
       if (isUIThread())
          return runnable.get();
 
