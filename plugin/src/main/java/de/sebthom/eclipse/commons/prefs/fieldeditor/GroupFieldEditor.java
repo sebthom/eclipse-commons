@@ -35,6 +35,9 @@ public class GroupFieldEditor extends FieldEditor {
    private final GridData fieldGroupLayoutData;
    private final List<FieldEditor> editors;
 
+   /**
+    * @param parent the parent composite with a GridLayout pre-configured
+    */
    public GroupFieldEditor(final String title, final Composite parent, final Function<Composite, List<FieldEditor>> fieldEditorsFactory) {
       fieldGroup = new Group(parent, SWT.DEFAULT);
       fieldGroup.setText(title);
@@ -57,12 +60,6 @@ public class GroupFieldEditor extends FieldEditor {
 
       // needs to be set after field editors were added
       fieldGroup.setLayout(GridLayoutFactory.swtDefaults().numColumns(numColumns).create());
-   }
-
-   @Override
-   public void setPropertyChangeListener(final @Nullable IPropertyChangeListener listener) {
-      super.setPropertyChangeListener(listener);
-      editors.forEach(e -> e.setPropertyChangeListener(listener));
    }
 
    @Override
@@ -96,9 +93,8 @@ public class GroupFieldEditor extends FieldEditor {
    }
 
    @Override
-   public void setPage(final @Nullable DialogPage dialogPage) {
-      super.setPage(dialogPage);
-      editors.forEach(e -> e.setPage(dialogPage));
+   public boolean isValid() {
+      return editors.stream().allMatch(FieldEditor::isValid);
    }
 
    @Override
@@ -112,13 +108,20 @@ public class GroupFieldEditor extends FieldEditor {
    }
 
    @Override
+   public void setPage(final @Nullable DialogPage dialogPage) {
+      super.setPage(dialogPage);
+      editors.forEach(e -> e.setPage(dialogPage));
+   }
+
+   @Override
    public void setPreferenceStore(final @Nullable IPreferenceStore store) {
       super.setPreferenceStore(store);
       editors.forEach(e -> e.setPreferenceStore(store));
    }
 
    @Override
-   public boolean isValid() {
-      return editors.stream().allMatch(FieldEditor::isValid);
+   public void setPropertyChangeListener(final @Nullable IPropertyChangeListener listener) {
+      super.setPropertyChangeListener(listener);
+      editors.forEach(e -> e.setPropertyChangeListener(listener));
    }
 }
