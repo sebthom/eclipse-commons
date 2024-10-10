@@ -6,80 +6,39 @@
  */
 package de.sebthom.eclipse.commons.text;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Objects;
+import java.nio.charset.Charset;
 
-import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.core.filebuffers.FileBuffers;
+import org.eclipse.core.filebuffers.ITextFileBuffer;
+import org.eclipse.core.filebuffers.ITextFileBufferManager;
 import org.eclipse.jface.text.IDocument;
+
+import de.sebthom.eclipse.commons.internal.EclipseCommonsPlugin;
+import net.sf.jstuff.core.io.stream.CharSequenceInputStream;
 
 /**
  * @author Sebastian Thomschke
  */
-public class DocumentInputStream extends InputStream {
+public final class DocumentInputStream extends CharSequenceInputStream {
 
-   private final IDocument doc;
-   private int nextPos = 0;
-
-   public DocumentInputStream(final IDocument document) {
-      doc = document;
-   }
-
-   @Override
-   public int available() throws IOException {
-      return Math.max(0, doc.getLength() - nextPos);
-   }
-
-   public IDocument getDocument() {
-      return doc;
-   }
-
-   @Override
-   public int read() throws IOException {
+   private static Charset getCharset(final IDocument document) {
+      final ITextFileBufferManager bufferManager = FileBuffers.getTextFileBufferManager();
+      if (bufferManager == null)
+         return Charset.defaultCharset();
+      final ITextFileBuffer buffer = bufferManager.getTextFileBuffer(document);
+      if (buffer == null)
+         return Charset.defaultCharset();
       try {
-         if (nextPos < doc.getLength())
-            return doc.getChar(nextPos++) & 0xFF;
-      } catch (final BadLocationException ex) {
-         // ignore
+         final String charsetName = buffer.getEncoding();
+         if (charsetName != null)
+            return Charset.forName(charsetName);
+      } catch (final Exception ex) {
+         EclipseCommonsPlugin.log().error(ex);
       }
-      return -1;
+      return Charset.defaultCharset();
    }
 
-   @Override
-   public int read(final byte[] buff, final int buffOffset, final int len) throws IOException {
-      Objects.checkFromIndexSize(buffOffset, len, buff.length);
-
-      if (len == 0)
-         return 0;
-
-      final var docLen = doc.getLength();
-      if (nextPos >= docLen)
-         return -1;
-
-      var bytesRead = -1;
-      try {
-         buff[buffOffset] = (byte) doc.getChar(nextPos++);
-         bytesRead = 1;
-
-         while (bytesRead < len) {
-            if (nextPos >= docLen) {
-               break;
-            }
-
-            buff[buffOffset + bytesRead++] = (byte) doc.getChar(nextPos++);
-         }
-      } catch (final BadLocationException ex) {
-         // ignore
-      }
-      return bytesRead;
-   }
-
-   @Override
-   public long skip(long n) throws IOException {
-      if (n < 1)
-         return 0;
-      n = Math.min(n, available());
-      nextPos += n;
-      return n;
+   public DocumentInputStream(final IDocument doc) {
+      super(doc::getChar, doc::getLength, getCharset(doc));
    }
 }
