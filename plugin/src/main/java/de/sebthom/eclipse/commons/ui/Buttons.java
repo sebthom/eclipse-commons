@@ -6,8 +6,12 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
+import static org.eclipse.swt.events.SelectionListener.widgetSelectedAdapter;
+
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -17,7 +21,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolItem;
 
 import net.sf.jstuff.core.ref.MutableObservableRef;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author Sebastian Thomschke
@@ -47,10 +50,25 @@ public abstract class Buttons extends Controls {
       button.addDisposeListener(ev -> model.unsubscribe(onModelChanged));
    }
 
-   public static SelectionListener onSelected(final Button button, final Runnable handler) {
-      Args.notNull("button", button);
-      Args.notNull("handler", handler);
+   public static SelectionListener onSelected(final Button button, final BiConsumer<Button, SelectionEvent> handler) {
+      final var listener = new SelectionAdapter() {
+         @Override
+         @NonNullByDefault({})
+         public void widgetSelected(final SelectionEvent ev) {
+            handler.accept(button, ev);
+         }
+      };
+      button.addSelectionListener(listener);
+      return listener;
+   }
 
+   public static SelectionListener onSelected(final Button button, final Consumer<SelectionEvent> handler) {
+      final var listener = widgetSelectedAdapter(handler);
+      button.addSelectionListener(listener);
+      return listener;
+   }
+
+   public static SelectionListener onSelected(final Button button, final Runnable handler) {
       final var listener = new SelectionAdapter() {
          @Override
          public void widgetSelected(final SelectionEvent ev) {
@@ -61,10 +79,25 @@ public abstract class Buttons extends Controls {
       return listener;
    }
 
-   public static SelectionListener onSelected(final ToolItem button, final Runnable handler) {
-      Args.notNull("button", button);
-      Args.notNull("handler", handler);
+   public static SelectionListener onSelected(final ToolItem button, final BiConsumer<ToolItem, SelectionEvent> handler) {
+      final var listener = new SelectionAdapter() {
+         @Override
+         @NonNullByDefault({})
+         public void widgetSelected(final SelectionEvent ev) {
+            handler.accept(button, ev);
+         }
+      };
+      button.addSelectionListener(listener);
+      return listener;
+   }
 
+   public static SelectionListener onSelected(final ToolItem button, final Consumer<SelectionEvent> handler) {
+      final var listener = widgetSelectedAdapter(handler);
+      button.addSelectionListener(listener);
+      return listener;
+   }
+
+   public static SelectionListener onSelected(final ToolItem button, final Runnable handler) {
       final var listener = new SelectionAdapter() {
          @Override
          public void widgetSelected(final SelectionEvent ev) {

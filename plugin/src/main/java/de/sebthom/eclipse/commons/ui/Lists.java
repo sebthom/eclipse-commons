@@ -6,6 +6,8 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
+import static org.eclipse.swt.events.SelectionListener.widgetSelectedAdapter;
+
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -21,13 +23,7 @@ import org.eclipse.swt.widgets.List;
 public abstract class Lists extends Controls {
 
    public static SelectionListener onSelectionChanged(final List list, final Consumer<SelectionEvent> handler) {
-      final var listener = new SelectionAdapter() {
-         @Override
-         @NonNullByDefault({})
-         public void widgetSelected(final SelectionEvent ev) {
-            handler.accept(ev);
-         }
-      };
+      final var listener = widgetSelectedAdapter(handler);
       list.addSelectionListener(listener);
       return listener;
    }

@@ -6,15 +6,18 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
+import static org.eclipse.swt.events.SelectionListener.widgetSelectedAdapter;
+
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Spinner;
 
 import net.sf.jstuff.core.ref.MutableObservableRef;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author Sebastian Thomschke
@@ -44,10 +47,25 @@ public abstract class Spinners {
       spinner.addDisposeListener(ev -> model.unsubscribe(onModelChanged));
    }
 
-   public static SelectionListener onSelected(final Spinner spinner, final Runnable handler) {
-      Args.notNull("spinner", spinner);
-      Args.notNull("handler", handler);
+   public static SelectionListener onSelected(final Spinner spinner, final BiConsumer<Spinner, SelectionEvent> handler) {
+      final var listener = new SelectionAdapter() {
+         @Override
+         @NonNullByDefault({})
+         public void widgetSelected(final SelectionEvent ev) {
+            handler.accept(spinner, ev);
+         }
+      };
+      spinner.addSelectionListener(listener);
+      return listener;
+   }
 
+   public static SelectionListener onSelected(final Spinner spinner, final Consumer<SelectionEvent> handler) {
+      final var listener = widgetSelectedAdapter(handler);
+      spinner.addSelectionListener(listener);
+      return listener;
+   }
+
+   public static SelectionListener onSelected(final Spinner spinner, final Runnable handler) {
       final var listener = new SelectionAdapter() {
          @Override
          public void widgetSelected(final SelectionEvent ev) {
