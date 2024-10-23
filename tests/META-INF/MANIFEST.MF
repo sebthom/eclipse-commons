@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: de.sebthom.eclipse.commons.tests
+Bundle-SymbolicName: de.sebthom.eclipse.commons.tests;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Sebastian Thomschke
+Automatic-Module-Name: de.sebthom.eclipse.commons.tests
+Fragment-Host: de.sebthom.eclipse.commons
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Import-Package: org.assertj.core.api,
+ org.junit.jupiter.api,
+ org.junit.jupiter.api.condition,
+ org.opentest4j

@@ -106,10 +106,13 @@ public abstract class CompositeFieldEditor<T extends Control> extends FieldEdito
    /**
     * Returns this field editor's widget control.
     *
-    * @return the widget control, or <code>null</code> if no widget field is created yet
+    * @return the widget control
     */
-   public @Nullable T getWidget() {
-      return widget;
+   public T getWidget() {
+      if (widget != null)
+         return widget;
+      throw new IllegalStateException("widget is null");
+
    }
 
    @Override
