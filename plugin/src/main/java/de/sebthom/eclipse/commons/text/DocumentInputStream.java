@@ -8,12 +8,8 @@ package de.sebthom.eclipse.commons.text;
 
 import java.nio.charset.Charset;
 
-import org.eclipse.core.filebuffers.FileBuffers;
-import org.eclipse.core.filebuffers.ITextFileBuffer;
-import org.eclipse.core.filebuffers.ITextFileBufferManager;
 import org.eclipse.jface.text.IDocument;
 
-import de.sebthom.eclipse.commons.internal.EclipseCommonsPlugin;
 import net.sf.jstuff.core.io.stream.CharSequenceInputStream;
 
 /**
@@ -22,20 +18,8 @@ import net.sf.jstuff.core.io.stream.CharSequenceInputStream;
 public final class DocumentInputStream extends CharSequenceInputStream {
 
    private static Charset getCharset(final IDocument document) {
-      final ITextFileBufferManager bufferManager = FileBuffers.getTextFileBufferManager();
-      if (bufferManager == null)
-         return Charset.defaultCharset();
-      final ITextFileBuffer buffer = bufferManager.getTextFileBuffer(document);
-      if (buffer == null)
-         return Charset.defaultCharset();
-      try {
-         final String charsetName = buffer.getEncoding();
-         if (charsetName != null)
-            return Charset.forName(charsetName);
-      } catch (final Exception ex) {
-         EclipseCommonsPlugin.log().error(ex);
-      }
-      return Charset.defaultCharset();
+      final var cs = Documents.getCharset(document);
+      return cs == null ? Charset.defaultCharset() : cs;
    }
 
    public DocumentInputStream(final IDocument doc) {

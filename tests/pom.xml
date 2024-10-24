@@ -45,7 +45,16 @@
               <useUIHarness>false</useUIHarness>
               <useUIThread>true</useUIThread>
 
-              <argLine>-Xmx512m ${tycho-surefire-plugin.platformArgs}</argLine>
+              <runOrder>alphabetical</runOrder>
+              <trimStackTrace>true</trimStackTrace>
+              <argLine>
+                 -Xmx768m
+                 -Duser.language=en
+                 -Duser.region=US
+                 -Dfile.encoding=UTF8
+                 -Djava.net.preferIPv4Stack=true
+                 ${tycho-surefire-plugin.platformArgs}
+              </argLine>
 
               <failIfNoTests>true</failIfNoTests>
               <enableAssertions>true</enableAssertions>

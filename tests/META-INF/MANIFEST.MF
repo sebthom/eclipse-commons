@@ -11,3 +11,4 @@ Import-Package: org.assertj.core.api,
  org.junit.jupiter.api,
  org.junit.jupiter.api.condition,
  org.opentest4j
+Require-Bundle: org.eclipse.ui.editors
