@@ -17,6 +17,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolItem;
 
@@ -26,6 +27,68 @@ import net.sf.jstuff.core.ref.MutableObservableRef;
  * @author Sebastian Thomschke
  */
 public abstract class Buttons extends Controls {
+
+   public static final class ButtonBuilder extends ControlBuilder<ButtonBuilder, Button> {
+
+      private ButtonBuilder(final Composite parent, final int style) {
+         super(new Button(parent, style));
+      }
+
+      /**
+       * @see Button#setSelection(boolean)
+       */
+      public ButtonBuilder setSelection(final boolean selected) {
+         widget.setSelection(selected);
+         return this;
+      }
+
+      public ButtonBuilder onSelected(final BiConsumer<Button, SelectionEvent> handler) {
+         Buttons.onSelected(widget, handler);
+         return this;
+      }
+
+      public ButtonBuilder onSelected(final Consumer<SelectionEvent> handler) {
+         Buttons.onSelected(widget, handler);
+         return this;
+      }
+
+      public ButtonBuilder onSelected(final Runnable handler) {
+         Buttons.onSelected(widget, handler);
+         return this;
+      }
+
+      /**
+       * @see Button#setAlignment(int)
+       */
+      public ButtonBuilder setAlignment(final int alignment) {
+         widget.setAlignment(alignment);
+         return this;
+      }
+
+      /**
+       * @see Button#setText(String)
+       */
+      public ButtonBuilder setText(final String text) {
+         widget.setText(text);
+         return this;
+      }
+   }
+
+   public static ButtonBuilder create(final Composite parent) {
+      return create(parent, SWT.NONE);
+   }
+
+   public static ButtonBuilder create(final Composite parent, final int style) {
+      return new ButtonBuilder(parent, style);
+   }
+
+   public static ButtonBuilder create(final String text, final Composite parent) {
+      return create(parent).setText(text);
+   }
+
+   public static ButtonBuilder create(final String text, final Composite parent, final int style) {
+      return create(parent, style).setText(text);
+   }
 
    /**
     * two-way bind
