@@ -23,6 +23,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IURIEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -39,10 +40,13 @@ public abstract class Editors {
    }
 
    public static @Nullable IEditorPart getActiveEditor() {
-      final var activePage = UI.getActiveWorkbenchPage();
-      if (activePage == null)
+      return getActiveEditor(UI.getActiveWorkbenchPage());
+   }
+
+   public static @Nullable IEditorPart getActiveEditor(@Nullable final IWorkbenchPage workbenchPage) {
+      if (workbenchPage == null)
          return null;
-      return activePage.getActiveEditor();
+      return workbenchPage.getActiveEditor();
    }
 
    public static @Nullable IFile getActiveFile() {
