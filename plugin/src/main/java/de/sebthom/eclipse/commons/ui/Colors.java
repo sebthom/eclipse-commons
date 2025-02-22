@@ -8,7 +8,10 @@ package de.sebthom.eclipse.commons.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
+
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author Sebastian Thomschke
@@ -46,5 +49,35 @@ public abstract class Colors {
     */
    public static Color get(final int colorId) {
       return DISPLAY.getSystemColor(colorId);
+   }
+
+   public static RGB[] createLinearGradient(final RGB from, final RGB to, final int steps) {
+      if (steps < 2) {
+         Args.min("steps", steps, 2);
+      }
+
+      @SuppressWarnings("null")
+      final RGB[] gradient = new RGB[steps];
+      gradient[0] = from;
+
+      // Calculate the difference and step increment for each color component
+      final float stepR = (float) (to.red - from.red) / (steps - 1);
+      final float stepG = (float) (to.green - from.green) / (steps - 1);
+      final float stepB = (float) (to.blue - from.blue) / (steps - 1);
+
+      for (int i = 1; i < steps; i++) {
+         int newRed = Math.round(from.red + stepR * i);
+         int newGreen = Math.round(from.green + stepG * i);
+         int newBlue = Math.round(from.blue + stepB * i);
+
+         // Clamp color values to the valid range [0, 255]
+         newRed = Math.max(0, Math.min(255, newRed));
+         newGreen = Math.max(0, Math.min(255, newGreen));
+         newBlue = Math.max(0, Math.min(255, newBlue));
+
+         gradient[i] = new RGB(newRed, newGreen, newBlue);
+      }
+
+      return gradient;
    }
 }
