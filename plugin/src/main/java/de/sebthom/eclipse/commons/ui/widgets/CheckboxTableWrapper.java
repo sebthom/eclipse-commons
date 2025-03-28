@@ -51,6 +51,12 @@ public class CheckboxTableWrapper<E> extends TableWrapper<E> {
       return this;
    }
 
+   @Override
+   public CheckboxTableWrapper<E> clearSelection() {
+      super.clearSelection();
+      return this;
+   }
+
    @SuppressWarnings("unchecked")
    public List<E> getCheckedItems() {
       return (List<E>) List.of(getViewer().getCheckedElements());
@@ -86,41 +92,49 @@ public class CheckboxTableWrapper<E> extends TableWrapper<E> {
 
    @Override
    public CheckboxTableWrapper<E> setEnabled(final boolean enabled) {
-      return (CheckboxTableWrapper<E>) super.setEnabled(enabled);
+      super.setEnabled(enabled);
+      return this;
    }
 
    @Override
    public CheckboxTableWrapper<E> setItems(final Collection<E> items) {
-      return (CheckboxTableWrapper<E>) super.setItems(items);
+      super.setItems(items);
+      return this;
    }
 
    @Override
    public CheckboxTableWrapper<E> setItems(final Collection<E> items, final Comparator<E> comparator) {
-      return (CheckboxTableWrapper<E>) super.setItems(items, comparator);
+      super.setItems(items, comparator);
+      return this;
    }
 
    @Override
    public CheckboxTableWrapper<E> setItems(@SuppressWarnings("unchecked") final E... items) {
-      return (CheckboxTableWrapper<E>) super.setItems(items);
+      super.setItems(items);
+      return this;
    }
 
    @Override
    public CheckboxTableWrapper<E> setItems(final E[] items, final Comparator<E> comparator) {
-      return (CheckboxTableWrapper<E>) super.setItems(items, comparator);
+      super.setItems(items, comparator);
+      return this;
    }
 
    @Override
    public CheckboxTableWrapper<E> setLabelComparator(final @Nullable Comparator<? super String> comparator) {
-      return (CheckboxTableWrapper<E>) super.setLabelComparator(comparator);
+      super.setLabelComparator(comparator);
+      return this;
    }
 
    @Override
    public CheckboxTableWrapper<E> setLabelProvider(final Function<E, String> provider) {
-      return (CheckboxTableWrapper<E>) super.setLabelProvider(provider);
+      super.setLabelProvider(provider);
+      return this;
    }
 
    @Override
    public CheckboxTableWrapper<E> setSelection(final @Nullable List<E> items) {
-      return (CheckboxTableWrapper<E>) super.setSelection(items);
+      super.setSelection(items);
+      return this;
    }
 }
