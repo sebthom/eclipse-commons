@@ -93,7 +93,9 @@ public abstract class CompositeFieldEditor<T extends Control> extends FieldEdito
          widget.addControlListener(new ControlAdapter() {
             @Override
             public void controlResized(final ControlEvent e) {
-               UI.runAsync(((Composite) e.widget)::layout); // workaround for redraw issues of fields inside the group
+               if (e.widget instanceof final Composite c) {
+                  UI.runAsync(c::layout); // workaround for redraw issues of fields inside the group
+               }
             }
          });
          widget.addDisposeListener(event -> this.widget = null);
