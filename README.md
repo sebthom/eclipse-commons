@@ -1,8 +1,8 @@
 # de.sebthom.eclipse.commons
 
 [![Build Status](https://github.com/sebthom/eclipse-commons/actions/workflows/build.yml/badge.svg)](https://github.com/sebthom/eclipse-commons/actions/workflows/build.yml)
-[![License](https://img.shields.io/github/license/sebthom/eclipse-commons.svg?color=blue)](LICENSE.txt)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.1%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+[![License](https://img.shields.io/github/license/sebthom/eclipse-commons.svg?color=blue)](LICENSE.txt)
 
 1. [What is it?](#what-is-it)
 1. [Installation](#installation)
