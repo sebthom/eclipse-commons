@@ -24,6 +24,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -43,7 +44,7 @@ public abstract class Editors {
       return getActiveEditor(UI.getActiveWorkbenchPage());
    }
 
-   public static @Nullable IEditorPart getActiveEditor(@Nullable final IWorkbenchPage workbenchPage) {
+   public static @Nullable IEditorPart getActiveEditor(final @Nullable IWorkbenchPage workbenchPage) {
       if (workbenchPage == null)
          return null;
       return workbenchPage.getActiveEditor();
@@ -54,20 +55,11 @@ public abstract class Editors {
    }
 
    public static @Nullable ITextEditor getActiveTextEditor() {
-      final var editor = getActiveEditor();
-      if (editor == null)
-         return null;
+      return getActiveTextEditor(UI.getActiveWorkbenchPage());
+   }
 
-      if (editor instanceof final ITextEditor textEditor)
-         return textEditor;
-
-      if (editor instanceof final MultiPageEditorPart pagePart) {
-         final var page = pagePart.getSelectedPage();
-         if (page instanceof final ITextEditor textEditor)
-            return textEditor;
-      }
-
-      return Adapters.adapt(editor, ITextEditor.class);
+   public static @Nullable ITextEditor getActiveTextEditor(final @Nullable IWorkbenchPage workbenchPage) {
+      return getTextEditor(getActiveEditor(workbenchPage));
    }
 
    public static @Nullable String getActiveTextSelection() {
@@ -144,6 +136,28 @@ public abstract class Editors {
       if (doc == null)
          return "";
       return doc.get();
+   }
+
+   public static @Nullable ITextEditor getTextEditor(final @Nullable IEditorPart editorPart) {
+      if (editorPart == null)
+         return null;
+
+      if (editorPart instanceof final ITextEditor textEditor)
+         return textEditor;
+
+      if (editorPart instanceof final MultiPageEditorPart multiPagePart) {
+         final var page = multiPagePart.getSelectedPage();
+         if (page instanceof final ITextEditor textEditor)
+            return textEditor;
+      }
+
+      return Adapters.adapt(editorPart, ITextEditor.class);
+   }
+
+   public static @Nullable ITextEditor getTextEditor(final @Nullable IWorkbenchPart part) {
+      if (part instanceof final IEditorPart editorPart)
+         return getTextEditor(editorPart);
+      return null;
    }
 
    public static boolean replaceCurrentSelection(final String replacement, final boolean selectReplacement) {
