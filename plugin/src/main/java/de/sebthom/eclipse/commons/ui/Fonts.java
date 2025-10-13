@@ -10,6 +10,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.TextStyle;
 
 /**
@@ -26,4 +27,13 @@ public abstract class Fonts {
       }
    };
 
+   public static int getTextWidth(final Font font, final String string) {
+      final GC gc = new GC(UI.getDisplay());
+      try {
+         gc.setFont(font);
+         return gc.stringExtent(string).x;
+      } finally {
+         gc.dispose();
+      }
+   }
 }
