@@ -15,10 +15,14 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IViewPart;
@@ -55,6 +59,45 @@ public abstract class UI {
       final var x = (parentBounds.width - shellBounds.width) / 2 + parentBounds.x;
       final var y = (parentBounds.height - shellBounds.height) / 2 + parentBounds.y;
       shell.setLocation(new Point(x, y));
+   }
+
+   public static ModifyListener debounce(final int delayMS, final ModifyListener listener) {
+      final int delay = Math.max(0, delayMS);
+      return new ModifyListener() {
+         private static final Runnable NOOP = () -> { /* empty lambda to avoid null checks */ };
+         private Runnable fireModifyText = NOOP;
+
+         @Override
+         public void modifyText(final ModifyEvent ev) {
+            final var display = ev.display;
+            final var widget = ev.widget;
+
+            // Cancel the previously scheduled task, if any
+            if (fireModifyText != NOOP) {
+               display.timerExec(-1, fireModifyText);
+            }
+
+            fireModifyText = () -> {
+               if (widget.isDisposed())
+                  return;
+               try {
+                  // create a fresh event so downstream code doesn't see a stale one
+                  final var newEv = new Event();
+                  newEv.type = SWT.Modify;
+                  newEv.widget = widget;
+                  newEv.display = display;
+                  newEv.time = (int) (System.currentTimeMillis() & 0x7fff_ffff);
+                  listener.modifyText(new ModifyEvent(newEv));
+               } finally {
+                  // drop references quickly
+                  fireModifyText = NOOP;
+               }
+            };
+
+            // schedule after debounce delay
+            display.timerExec(delay, fireModifyText);
+         }
+      };
    }
 
    @SuppressWarnings("unchecked")
