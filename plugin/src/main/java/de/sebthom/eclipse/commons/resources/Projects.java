@@ -172,7 +172,7 @@ public abstract class Projects {
 
    public static void removeBuilder(final IProject project, final String builderId, final @Nullable IProgressMonitor monitor)
          throws CoreException {
-      if (hasBuilder(project, builderId))
+      if (!hasBuilder(project, builderId))
          return;
 
       final var projectCfg = project.getDescription();
