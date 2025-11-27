@@ -224,7 +224,11 @@ public abstract class UI {
       if (page == null)
          return null;
 
-      final var editorSite = page.getActiveEditor().getEditorSite();
+      final var editor = page.getActiveEditor();
+      if (editor == null)
+         return null;
+
+      final var editorSite = editor.getEditorSite();
       if (editorSite != null)
          return editorSite.getActionBars().getStatusLineManager();
 
