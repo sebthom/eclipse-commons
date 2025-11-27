@@ -158,7 +158,7 @@ public class WindowsRegistry {
       Args.notEmpty("keyParentPath", keyParentPath);
       Args.notEmpty("keyName", keyName);
 
-      return Advapi32Util.registryKeyExists(root, keyParentPath + KEY_PATH_SEPARATOR + keyName);
+      return hasKey(keyParentPath + KEY_PATH_SEPARATOR + keyName);
    }
 
    /**
