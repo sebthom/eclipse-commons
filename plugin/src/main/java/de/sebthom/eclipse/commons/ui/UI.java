@@ -6,12 +6,11 @@
  */
 package de.sebthom.eclipse.commons.ui;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -40,6 +39,7 @@ import org.eclipse.ui.progress.IProgressConstants;
 
 import de.sebthom.eclipse.commons.internal.EclipseCommonsPlugin;
 import de.sebthom.eclipse.commons.resources.Projects;
+import net.sf.jstuff.core.functional.ThrowingRunnable;
 import net.sf.jstuff.core.functional.ThrowingSupplier;
 
 /**
@@ -306,38 +306,92 @@ public abstract class UI {
     *
     * @throws SWTException if the {@link Display} has been disposed
     */
-   public static void run(final Runnable runnable) {
-      if (isUIThread()) {
-         runnable.run();
-      } else {
-         getDisplay().syncExec(runnable);
-      }
-   }
-
-   /**
-    * Runs the given runnable synchronously on the UI thread
-    *
-    * @throws EXCEPTION if executing the runnable failed
-    * @throws SWTException if the {@link Display} has been disposed
-    */
-   @NonNullByDefault({})
    @SuppressWarnings("unchecked")
-   public static <RETURN_VALUE, EXCEPTION extends @NonNull Exception> RETURN_VALUE run(
-         final @NonNull ThrowingSupplier<RETURN_VALUE, EXCEPTION> runnable) throws EXCEPTION {
-      if (isUIThread())
-         return runnable.get();
-
-      final var resultRef = new AtomicReference<RETURN_VALUE>();
-      final var exRef = new AtomicReference<@Nullable Exception>();
+   public static <EXCEPTION extends Throwable> void run(final ThrowingRunnable<EXCEPTION> runnable) throws EXCEPTION {
+      if (isUIThread()) {
+         runnable.runOrThrow();
+         return;
+      }
+      final var exRef = new AtomicReference<@Nullable Throwable>();
       getDisplay().syncExec(() -> {
          try {
-            resultRef.set(runnable.getOrThrow());
-         } catch (final Exception ex) {
+            runnable.runOrThrow();
+         } catch (final Throwable ex) { // CHECKSTYLE:IGNORE .*
             exRef.set(ex);
          }
       });
 
-      final Exception ex = exRef.get();
+      final Throwable ex = exRef.get();
+      if (ex != null) {
+         if (ex instanceof final RuntimeException rex)
+            throw rex;
+         throw (EXCEPTION) ex;
+      }
+   }
+
+   /**
+    * Runs the given runnable asynchronously on the UI thread
+    *
+    * @throws SWTException if the {@link Display} has been disposed
+    */
+   public static CompletableFuture<@Nullable Void> runAsync(final ThrowingRunnable<?> runnable) {
+      final var future = new CompletableFuture<@Nullable Void>();
+      getDisplay().asyncExec(() -> {
+         try {
+            if (future.isDone())
+               return;
+            runnable.runOrThrow();
+            future.complete(null);
+         } catch (final Throwable ex) { // CHECKSTYLE:IGNORE .*
+            future.completeExceptionally(ex);
+         }
+      });
+      return future;
+   }
+
+   /**
+    * Runs the given runnable on the UI thread after the specified number of milliseconds have elapsed.
+    *
+    * @throws SWTException if the {@link Display} has been disposed
+    */
+   public static CompletableFuture<@Nullable Void> runDelayed(final int delayMS, final ThrowingRunnable<?> runnable) {
+      final var future = new CompletableFuture<@Nullable Void>();
+      getDisplay().timerExec(delayMS, () -> {
+         try {
+            if (future.isDone())
+               return;
+            runnable.runOrThrow();
+            future.complete(null);
+         } catch (final Throwable ex) { // CHECKSTYLE:IGNORE .*
+            future.completeExceptionally(ex);
+         }
+      });
+      return future;
+   }
+
+   /**
+    * Runs the given supplier synchronously on the UI thread and completes the returned future with its value.
+    *
+    * @throws EXCEPTION if executing the runnable failed
+    * @throws SWTException if the {@link Display} has been disposed
+    */
+   @SuppressWarnings("unchecked")
+   public static <RETURN_VALUE, EXCEPTION extends Throwable> RETURN_VALUE supply(final ThrowingSupplier<RETURN_VALUE, EXCEPTION> supplier)
+         throws EXCEPTION {
+      if (isUIThread())
+         return supplier.getOrThrow();
+
+      final var resultRef = new AtomicReference<RETURN_VALUE>();
+      final var exRef = new AtomicReference<@Nullable Throwable>();
+      getDisplay().syncExec(() -> {
+         try {
+            resultRef.set(supplier.getOrThrow());
+         } catch (final Throwable ex) { // CHECKSTYLE:IGNORE .*
+            exRef.set(ex);
+         }
+      });
+
+      final Throwable ex = exRef.get();
       if (ex != null) {
          if (ex instanceof final RuntimeException rex)
             throw rex;
@@ -347,20 +401,42 @@ public abstract class UI {
    }
 
    /**
-    * Runs the given runnable asynchronously on the UI thread
+    * Runs the given supplier asynchronously on the UI thread and completes the returned future with its value.
     *
     * @throws SWTException if the {@link Display} has been disposed
     */
-   public static void runAsync(final Runnable runnable) {
-      getDisplay().asyncExec(runnable);
+   public static <RETURN_VALUE> CompletableFuture<RETURN_VALUE> supplyAsync(final ThrowingSupplier<RETURN_VALUE, ?> supplier) {
+      final var future = new CompletableFuture<RETURN_VALUE>();
+      getDisplay().asyncExec(() -> {
+         try {
+            if (future.isDone())
+               return;
+            future.complete(supplier.getOrThrow());
+         } catch (final Throwable ex) { // CHECKSTYLE:IGNORE .*
+            future.completeExceptionally(ex);
+         }
+      });
+      return future;
    }
 
    /**
-    * Runs the given runnable on the UI thread after the specified number of milliseconds have elapsed.
+    * Runs the given supplier on the UI thread after the specified number of milliseconds have elapsed and completes the returned future
+    * with its value.
     *
     * @throws SWTException if the {@link Display} has been disposed
     */
-   public static void runDelayed(final int delayMS, final Runnable runnable) {
-      getDisplay().timerExec(delayMS, runnable);
+   public static <RETURN_VALUE> CompletableFuture<RETURN_VALUE> supplyDelayed(final int delayMS,
+         final ThrowingSupplier<RETURN_VALUE, ?> supplier) {
+      final var future = new CompletableFuture<RETURN_VALUE>();
+      getDisplay().timerExec(delayMS, () -> {
+         try {
+            if (future.isDone())
+               return;
+            future.complete(supplier.getOrThrow());
+         } catch (final Throwable ex) { // CHECKSTYLE:IGNORE .*
+            future.completeExceptionally(ex);
+         }
+      });
+      return future;
    }
 }

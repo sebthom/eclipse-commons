@@ -22,7 +22,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
 public abstract class Dialogs {
 
    public static boolean openOkCancel(final String title, final String msg) {
-      return UI.run(() -> MessageDialog.openConfirm(UI.getShell(), title, msg));
+      return UI.supply(() -> MessageDialog.openConfirm(UI.getShell(), title, msg));
    }
 
    /**
@@ -32,7 +32,7 @@ public abstract class Dialogs {
     *          <li>{@link IDialogConstants#CANCEL_ID} (1) - user clicked "Cancel"
     */
    public static int openYesNoCancel(final String title, final String msg) {
-      final var rc = UI.run(() -> {
+      final var rc = UI.supply(() -> {
          final var dialog = new MessageDialog( //
             UI.getShell(), //
             title, //
