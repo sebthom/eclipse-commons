@@ -8,6 +8,7 @@ package de.sebthom.eclipse.commons.ui;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -51,10 +52,12 @@ public abstract class Dialogs {
       };
    }
 
+   @NonNullByDefault // to exclude ARRAY_CONTENTS
    public static void showError(final @Nullable String title, final @Nullable String msg, final Object... msgArgs) {
       UI.run(() -> MessageDialog.openError(UI.getShell(), title, ArrayUtils.isEmpty(msgArgs) ? msg : NLS.bind(msg, msgArgs)));
    }
 
+   @NonNullByDefault // to exclude ARRAY_CONTENTS
    public static void showWarning(final @Nullable String title, final @Nullable String msg, final Object... msgArgs) {
       UI.run(() -> MessageDialog.openWarning(UI.getShell(), title, ArrayUtils.isEmpty(msgArgs) ? msg : NLS.bind(msg, msgArgs)));
    }

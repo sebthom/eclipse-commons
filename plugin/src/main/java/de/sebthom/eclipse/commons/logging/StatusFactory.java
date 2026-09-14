@@ -6,6 +6,8 @@
  */
 package de.sebthom.eclipse.commons.logging;
 
+import java.util.Objects;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
@@ -28,7 +30,7 @@ public class StatusFactory {
    }
 
    public StatusFactory(final Bundle bundle) {
-      pluginId = bundle.getSymbolicName();
+      pluginId = Objects.requireNonNull(bundle.getSymbolicName(), () -> "Bundle " + bundle.getBundleId() + " has no symbolic name.");
    }
 
    public StatusFactory(final Plugin plugin) {

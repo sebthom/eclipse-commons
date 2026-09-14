@@ -7,6 +7,7 @@
 package de.sebthom.eclipse.commons.command;
 
 import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jdt.annotation.Nullable;
@@ -30,13 +31,16 @@ public class ToggleCommand extends AbstractHandler {
       if (service == null)
          return false;
 
-      final var command = service.getCommand(commandId);
+      final Command command = service.getCommand(commandId);
       return (Boolean) command.getState(RegistryToggleState.STATE_ID).getValue();
    }
 
    @Override
    public @Nullable Object execute(final ExecutionEvent event) throws ExecutionException {
-      HandlerUtil.toggleCommandState(event.getCommand());
+      final Command cmd = event.getCommand();
+      if (cmd != null) {
+         HandlerUtil.toggleCommandState(cmd);
+      }
       return null;
    }
 }

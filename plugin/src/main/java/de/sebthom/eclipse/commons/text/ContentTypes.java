@@ -6,8 +6,8 @@
  */
 package de.sebthom.eclipse.commons.text;
 
-import static org.eclipse.core.filebuffers.FileBuffers.getTextFileBufferManager;
-import static org.eclipse.core.runtime.Platform.getContentTypeManager;
+import static org.eclipse.core.filebuffers.FileBuffers.*;
+import static org.eclipse.core.runtime.Platform.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

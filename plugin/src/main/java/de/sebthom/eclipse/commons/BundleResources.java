@@ -57,7 +57,10 @@ public class BundleResources {
 
       try {
          final URL url = FileLocator.toFileURL(getURL(resourcePath)); // extracts the file
-         return URIUtil.toFile(URIUtil.toURI(url));
+         final File file = URIUtil.toFile(URIUtil.toURI(url));
+         if (file == null)
+            throw new IOException("Resource did not resolve to a file URL: " + url);
+         return file;
       } catch (final IOException ex) {
          throw ex;
       } catch (final Exception ex) {

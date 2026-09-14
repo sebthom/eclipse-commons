@@ -6,11 +6,10 @@
  */
 package de.sebthom.eclipse.commons;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -30,19 +29,18 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class AbstractEclipsePlugin extends AbstractUIPlugin {
 
-   @NonNullByDefault({})
-   protected BundleResources bundleResources;
+   protected @Nullable BundleResources bundleResources;
+   protected @Nullable PluginLogger logger;
+   protected @Nullable IPersistentPreferenceStore preferenceStore;
+   protected @Nullable StatusFactory statusFactory;
 
-   @NonNullByDefault({})
-   protected PluginLogger logger;
+   protected final String pluginId;
 
-   @NonNullByDefault({})
-   protected IPersistentPreferenceStore preferenceStore;
-
-   @NonNullByDefault({})
-   protected StatusFactory statusFactory;
-
-   protected final String pluginId = getBundle().getSymbolicName();
+   protected AbstractEclipsePlugin() {
+      final var bundle = getBundle();
+      final var symbolicName = getBundle().getSymbolicName();
+      pluginId = symbolicName == null ? "bundle-" + bundle.getBundleId() : symbolicName;
+   }
 
    public BundleResources getBundleResources() {
       var bundleResources = this.bundleResources;

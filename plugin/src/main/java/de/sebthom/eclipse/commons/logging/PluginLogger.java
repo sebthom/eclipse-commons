@@ -34,7 +34,8 @@ public class PluginLogger {
    }
 
    public PluginLogger(final Bundle bundle) {
-      fileLog = Logger.create(bundle.getSymbolicName());
+      final String symbolicName = bundle.getSymbolicName();
+      fileLog = Logger.create(symbolicName != null ? symbolicName : "bundle-" + bundle.getBundleId());
       uiLog = Platform.getLog(bundle);
       statusFactory = new StatusFactory(bundle);
    }
